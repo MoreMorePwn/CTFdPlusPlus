@@ -10,7 +10,7 @@ from CTFd.utils.modes import TEAMS_MODE, USERS_MODE
 
 def ctf_name():
     name = get_config("ctf_name")
-    return name if name else "CTFd"
+    return name if name else "CTFd++"
 
 
 def user_mode():

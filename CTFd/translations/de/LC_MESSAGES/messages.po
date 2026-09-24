@@ -184,8 +184,8 @@ msgid "Theme"
 msgstr "Theme"
 
 #: CTFd/forms/setup.py:77
-msgid "CTFd Theme to use. Can be changed later."
-msgstr "CTFd-Theme, das verwendet werden soll. Kann später geändert werden."
+msgid "CTFd++ Theme to use. Can be changed later."
+msgstr "CTFd++-Theme, das verwendet werden soll. Kann später geändert werden."
 
 #: CTFd/forms/setup.py:84
 msgid "Theme Color"
@@ -314,8 +314,8 @@ msgid "Search for matching users"
 msgstr "Suche nach passenden Benutzern"
 
 #: CTFd/themes/core-beta/templates/base.html:53
-msgid "Powered by CTFd"
-msgstr "Powered by CTFd"
+msgid "Powered by CTFd++"
+msgstr "Powered by CTFd++"
 
 #: CTFd/themes/core-beta/templates/challenge.html:11
 #: CTFd/themes/core-beta/templates/teams/private.html:388
@@ -596,8 +596,8 @@ msgid "Visibility Settings"
 msgstr "Sichtbarkeitseinstellungen"
 
 #: CTFd/themes/core-beta/templates/setup.html:146
-msgid "Control the visibility of different sections of CTFd"
-msgstr "Steuern Sie die Sichtbarkeit verschiedener Bereiche von CTFd"
+msgid "Control the visibility of different sections of CTFd++"
+msgstr "Steuern Sie die Sichtbarkeit verschiedener Bereiche von CTFd++"
 
 #: CTFd/themes/core-beta/templates/setup.html:232
 msgid "Subscribe email address to the CTFd LLC Newsletter for news and updates"

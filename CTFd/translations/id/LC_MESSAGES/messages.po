@@ -196,8 +196,8 @@ msgid "Theme"
 msgstr "Tema"
 
 #: CTFd/forms/setup.py:77
-msgid "CTFd Theme to use. Can be changed later."
-msgstr "Tema CTFd yang akan digunakan. Dapat diubah nanti."
+msgid "CTFd++ Theme to use. Can be changed later."
+msgstr "Tema CTFd++ yang akan digunakan. Dapat diubah nanti."
 
 #: CTFd/forms/setup.py:84
 msgid "Theme Color"
@@ -333,8 +333,8 @@ msgid "Search for matching users"
 msgstr "Cari pengguna yang sesuai"
 
 #: CTFd/themes/core-beta/templates/base.html:53
-msgid "Powered by CTFd"
-msgstr "Didukung oleh CTFd"
+msgid "Powered by CTFd++"
+msgstr "Didukung oleh CTFd++"
 
 #: CTFd/themes/core-beta/templates/challenge.html:11
 #: CTFd/themes/core-beta/templates/teams/private.html:388
@@ -628,8 +628,8 @@ msgid "Visibility Settings"
 msgstr "Pengaturan Visibilitas"
 
 #: CTFd/themes/core-beta/templates/setup.html:146
-msgid "Control the visibility of different sections of CTFd"
-msgstr "Kontrol visibilitas berbagai bagian dari CTFd"
+msgid "Control the visibility of different sections of CTFd++"
+msgstr "Kontrol visibilitas berbagai bagian dari CTFd++"
 
 #: CTFd/themes/core-beta/templates/setup.html:232
 msgid ""

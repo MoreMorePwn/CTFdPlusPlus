@@ -75,7 +75,7 @@ class SetupForm(BaseForm):
     )
     ctf_theme = SelectField(
         _l("Theme"),
-        description=_l("CTFd Theme to use. Can be changed later."),
+        description=_l("CTFd++ Theme to use. Can be changed later."),
         choices=list(zip(get_themes(), get_themes())),
         default=DEFAULT_THEME,
         validators=[InputRequired()],

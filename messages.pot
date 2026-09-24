@@ -1,6 +1,6 @@
-# Translations template for CTFd.
+# Translations template for CTFd++.
 # Copyright (C) 2025 CTFd LLC
-# This file is distributed under the same license as the CTFd project.
+# This file is distributed under the same license as the CTFd++ project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
 #, fuzzy
@@ -189,7 +189,7 @@ msgid "Theme"
 msgstr ""
 
 #: CTFd/forms/setup.py:77
-msgid "CTFd Theme to use. Can be changed later."
+msgid "CTFd++ Theme to use. Can be changed later."
 msgstr ""
 
 #: CTFd/forms/setup.py:84
@@ -323,7 +323,7 @@ msgid "Search for matching users"
 msgstr ""
 
 #: CTFd/themes/core-beta/templates/base.html:53
-msgid "Powered by CTFd"
+msgid "Powered by CTFd++"
 msgstr ""
 
 #: CTFd/themes/core-beta/templates/challenge.html:11
@@ -612,7 +612,7 @@ msgid "Visibility Settings"
 msgstr ""
 
 #: CTFd/themes/core-beta/templates/setup.html:146
-msgid "Control the visibility of different sections of CTFd"
+msgid "Control the visibility of different sections of CTFd++"
 msgstr ""
 
 #: CTFd/themes/core-beta/templates/setup.html:232

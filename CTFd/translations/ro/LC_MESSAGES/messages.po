@@ -184,7 +184,7 @@ msgid "Theme"
 msgstr "Temă"
 
 #: CTFd/forms/setup.py:77
-msgid "CTFd Theme to use. Can be changed later."
+msgid "CTFd++ Theme to use. Can be changed later."
 msgstr "Tema CD de utilizat. Poate fi schimbată mai târziu."
 
 #: CTFd/forms/setup.py:84
@@ -314,8 +314,8 @@ msgid "Search for matching users"
 msgstr "Caută utilizatori care se potrivesc"
 
 #: CTFd/themes/core-beta/templates/base.html:53
-msgid "Powered by CTFd"
-msgstr "Funcționează cu CTFd"
+msgid "Powered by CTFd++"
+msgstr "Funcționează cu CTFd++"
 
 #: CTFd/themes/core-beta/templates/challenge.html:11
 #: CTFd/themes/core-beta/templates/teams/private.html:388
@@ -598,8 +598,8 @@ msgid "Visibility Settings"
 msgstr "Setări de vizibilitate"
 
 #: CTFd/themes/core-beta/templates/setup.html:146
-msgid "Control the visibility of different sections of CTFd"
-msgstr "Controlează vizibilitatea diferitelor secțiuni ale CTFd"
+msgid "Control the visibility of different sections of CTFd++"
+msgstr "Controlează vizibilitatea diferitelor secțiuni ale CTFd++"
 
 #: CTFd/themes/core-beta/templates/setup.html:232
 msgid "Subscribe email address to the CTFd LLC Newsletter for news and updates"

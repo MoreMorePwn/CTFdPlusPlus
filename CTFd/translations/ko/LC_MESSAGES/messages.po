@@ -184,8 +184,8 @@ msgid "Theme"
 msgstr "테마"
 
 #: CTFd/forms/setup.py:77
-msgid "CTFd Theme to use. Can be changed later."
-msgstr "CTFd에 테마를 사용합니다. 나중에 변경할 수 있습니다."
+msgid "CTFd++ Theme to use. Can be changed later."
+msgstr "CTFd++에 테마를 사용합니다. 나중에 변경할 수 있습니다."
 
 #: CTFd/forms/setup.py:84
 msgid "Theme Color"
@@ -314,8 +314,8 @@ msgid "Search for matching users"
 msgstr "일치하는 유저 검색"
 
 #: CTFd/themes/core-beta/templates/base.html:53
-msgid "Powered by CTFd"
-msgstr "Powered by CTFd"
+msgid "Powered by CTFd++"
+msgstr "Powered by CTFd++"
 
 #: CTFd/themes/core-beta/templates/challenge.html:11
 #: CTFd/themes/core-beta/templates/teams/private.html:388
@@ -594,8 +594,8 @@ msgid "Visibility Settings"
 msgstr "가시성 설정"
 
 #: CTFd/themes/core-beta/templates/setup.html:146
-msgid "Control the visibility of different sections of CTFd"
-msgstr "CTFd의 다양한 섹션에 대한 가시성을 제어합니다."
+msgid "Control the visibility of different sections of CTFd++"
+msgstr "CTFd++의 다양한 섹션에 대한 가시성을 제어합니다."
 
 #: CTFd/themes/core-beta/templates/setup.html:232
 msgid "Subscribe email address to the CTFd LLC Newsletter for news and updates"

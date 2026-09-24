@@ -1,4 +1,4 @@
-# Running This CTFd Instance
+# Running This CTFd++ Instance
 
 Use `./run.sh` as the entrypoint for this deployment. Running `./run.sh` with no arguments prints the help text.
 
@@ -6,7 +6,7 @@ Use `./run.sh` as the entrypoint for this deployment. Running `./run.sh` with no
 - Normal restart/re-up: `./run.sh start` or `docker compose up -d` starts the existing instance with the current `.env` and data. It does not rotate credentials.
 - Full local reset: `./run.sh reset` stops the stack, deletes local data/config/credentials, generates fresh credentials, and starts a new instance. Use `./run.sh reset --yes` to skip the confirmation prompt.
 
-After startup, open CTFd at `http://<server>/` or `http://<server>:8000/`.
+After startup, open CTFd++ at `http://<server>/` or `http://<server>:8000/`.
 
 # ![](https://github.com/CTFd/CTFd/blob/master/CTFd/themes/core/static/img/logo.png?raw=true)
 
@@ -19,7 +19,7 @@ After startup, open CTFd at `http://<server>/` or `http://<server>:8000/`.
 
 ### Reset and Automatic Exports
 
-- Removed the admin reset feature and Danger Zone UI. Switching back to user mode now requires a full CTFd reset from the CLI.
+- Removed the admin reset feature and Danger Zone UI. Switching back to user mode now requires a full CTFd++ reset from the CLI.
 - Added automatic exports every 20 minutes while the competition is running. Exports are saved in `.export`, and the oldest exports are removed when the folder reaches 1 GB.
 
 ### Admin Sidebar Navigation
@@ -108,7 +108,7 @@ Added an Announcer Bot under admin configuration for Discord webhook solve annou
 
 ### Post-Revoke Calculator
 
-Added Post-Revoke Calc for simulated post-event score review, including simulated bans, solve/award revokes, percentage score adjustments, notes, challenge score recalculation, bracket filtering, reset backups, CTFd export/import support, and PDF export. Challenge rows can be opened to review every correct submission for that challenge with the same score percentage, revoke, note, and banned-status controls.
+Added Post-Revoke Calc for simulated post-event score review, including simulated bans, solve/award revokes, percentage score adjustments, notes, challenge score recalculation, bracket filtering, reset backups, CTFd++ export/import support, and PDF export. Challenge rows can be opened to review every correct submission for that challenge with the same score percentage, revoke, note, and banned-status controls.
 
 <p align="center">
   <img src="docs/screenshots/ctfd-admin-post-revoke-calc-modal-viewport.png" alt="Admin Post-Revoke Calculator score review">
@@ -136,9 +136,9 @@ Added an `Assistant` admin role with configurable access control. Full admins ca
 - Added `reset.sh` for full-instance reset with seven confirmations. It exports the current instance into `.reset`, archives `.export` into `.reset` with a timestamp, and then starts a fresh stack.
 - Added `scripts/trigger_anti_cheat.py` to generate local demo events for validating the anti-cheat detectors.
 
-## What is CTFd?
+## What is CTFd++?
 
-CTFd is a Capture The Flag framework focusing on ease of use and customizability. It comes with everything you need to run a CTF and it's easy to customize with plugins and themes.
+CTFd++ is a Capture The Flag framework focusing on ease of use and customizability. It comes with everything you need to run a CTF and it's easy to customize with plugins and themes.
 
 ![CTFd is a CTF in a can.](https://github.com/CTFd/CTFd/blob/master/CTFd/themes/core/static/img/scoreboard.png?raw=true)
 
@@ -203,7 +203,7 @@ Looking to use CTFd but don't want to deal with managing infrastructure? Check o
 
 ## MajorLeagueCyber
 
-CTFd is heavily integrated with [MajorLeagueCyber](https://majorleaguecyber.org/). MajorLeagueCyber (MLC) is a CTF stats tracker that provides event scheduling, team tracking, and single sign on for events.
+CTFd++ is heavily integrated with [MajorLeagueCyber](https://majorleaguecyber.org/). MajorLeagueCyber (MLC) is a CTF stats tracker that provides event scheduling, team tracking, and single sign on for events.
 
 By registering your CTF event with MajorLeagueCyber users can automatically login, track their individual and team scores, submit writeups, and get notifications of important events.
 

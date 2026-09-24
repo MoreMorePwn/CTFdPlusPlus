@@ -167,11 +167,11 @@ class ServerConfig(object):
 
     """
     TRUSTED_PROXIES:
-    Defines a set of regular expressions used for finding a user's IP address if the CTFd instance
+    Defines a set of regular expressions used for finding a user's IP address if the CTFd++ instance
     is behind a proxy. If you are running a CTF and users are on the same network as you, you may choose to remove
     some proxies from the list.
 
-    CTFd only uses IP addresses for cursory tracking purposes. It is ill-advised to do anything complicated based
+    CTFd++ only uses IP addresses for cursory tracking purposes. It is ill-advised to do anything complicated based
     solely on IP addresses unless you know what you are doing.
     """
     TRUSTED_PROXIES = [

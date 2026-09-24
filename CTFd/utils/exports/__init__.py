@@ -167,7 +167,7 @@ def import_ctf(backup, erase=True, ignore_overrides=False):
     if "db" not in member_dirs:
         set_import_error("Exception: db folder is missing")
         raise Exception(
-            'CTFd couldn\'t find the "db" folder in this backup. '
+            'CTFd++ couldn\'t find the "db" folder in this backup. '
             "The backup may be malformed or corrupted and the import process cannot continue."
         )
 

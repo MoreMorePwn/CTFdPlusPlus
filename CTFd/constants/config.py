@@ -20,7 +20,7 @@ class _ConfigsWrapper:
 
     @property
     def ctf_name(self):
-        return get_config("ctf_name", default="CTFd")
+        return get_config("ctf_name", default="CTFd++")
 
     @property
     def ctf_small_icon(self):

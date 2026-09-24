@@ -8,7 +8,7 @@ usage() {
   cat <<'EOF'
 Usage:
   ./run.sh             Show this help.
-  ./run.sh start       Start CTFd with current data, or initialize a fresh instance.
+  ./run.sh start       Start CTFd++ with current data, or initialize a fresh instance.
   ./run.sh reset       Delete local data/config and start as a fresh instance.
   ./run.sh reset --yes Same as reset, without the confirmation prompt.
 
@@ -80,9 +80,9 @@ EOF
   echo
   echo "Generated service credentials:"
   echo "  MariaDB root: username=root password=${db_root_password}"
-  echo "  MariaDB CTFd app: username=${db_user} password=${db_password} database=${db_name}"
+  echo "  MariaDB CTFd++ app: username=${db_user} password=${db_password} database=${db_name}"
   echo "  Redis: username=default password=${redis_password}"
-  echo "  CTFd secret key: ${secret_key}"
+  echo "  CTFd++ secret key: ${secret_key}"
   echo
 }
 
@@ -112,7 +112,7 @@ confirm_reset() {
     return
   fi
 
-  echo "This will stop Docker Compose and delete local CTFd data, uploads, exports, database, Redis data, and credentials."
+  echo "This will stop Docker Compose and delete local CTFd++ data, uploads, exports, database, Redis data, and credentials."
   printf "Type 'reset' to continue: "
   read -r answer
   if [ "${answer}" != "reset" ]; then
