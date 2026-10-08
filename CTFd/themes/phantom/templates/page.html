@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if request.endpoint == 'views.static_html' and request.view_args.get('route') == 'index' %}
+    <section class="phantom-hero" aria-labelledby="phantom-event-name">
+      <div class="container phantom-hero-content">
+        {% if Configs.ctf_logo %}
+          <img class="phantom-event-logo" src="{{ url_for('views.files', path=Configs.ctf_logo) }}" alt="{{ Configs.ctf_name }}">
+        {% endif %}
+        <p class="phantom-hero-label">Capture the flag</p>
+        <h1 id="phantom-event-name">{{ Configs.ctf_name }}</h1>
+        <p class="phantom-hero-description">{{ Configs.ctf_description or 'Find the weakness. Capture the flag. Leave your mark.' }}</p>
+        <div class="phantom-hero-actions">
+          <a class="phantom-enter" href="{{ url_for('challenges.listing') }}">
+            <span>{% trans %}Challenges{% endtrans %}</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </a>
+          {% if Configs.account_visibility != 'admins' and Configs.score_visibility != 'admins' %}
+            <a class="phantom-scoreboard-link" href="{{ url_for('scoreboard.listing') }}">{% trans %}Scoreboard{% endtrans %}</a>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+    {% if content | trim %}
+      <section class="phantom-page-content container">{{ content | safe }}</section>
+    {% endif %}
+  {% else %}
+    <div class="phantom-page-content container">{{ content | safe }}</div>
+  {% endif %}
+{% endblock %}

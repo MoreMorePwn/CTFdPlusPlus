@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title or Configs.ctf_name }}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ed2336">
+  <link rel="shortcut icon" href="{{ Configs.ctf_small_icon }}" type="image/x-icon">
+  {{ meta | safe }}
+
+  {% block stylesheets %}
+    {{ Assets.css("assets/scss/main.scss") }}
+    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='phantom', path='css/phantom.css', v='1') }}">
+  {% endblock %}
+  {{ Plugins.styles }}
+  {{ Assets.js("assets/js/color_mode_switcher.js", type=None) }}
+  <script>
+    window.init = {
+      urlRoot: {{ request.script_root | tojson }},
+      csrfNonce: {{ Session.nonce | tojson }},
+      userMode: {{ Configs.user_mode | tojson }},
+      userId: {{ Session.id | tojson }},
+      userName: {{ User.name | tojson }},
+      userEmail: {{ User.email | tojson }},
+      userVerified: {{ User.verified | tojson }},
+      teamId: {{ Team.id | tojson }},
+      teamName: {{ Team.name | tojson }},
+      start: {{ Configs.start | tojson }},
+      end: {{ Configs.end | tojson }},
+      themeSettings: {{ Configs.theme_settings | tojson }},
+      eventSounds: [
+        {{ url_for('views.themes', theme='core', path='sounds/notification.webm') | tojson }},
+        {{ url_for('views.themes', theme='core', path='sounds/notification.mp3') | tojson }}
+      ]
+    };
+  </script>
+  <script src="{{ url_for('views.themes_beta', theme='phantom', path='js/phantom.js', v='1') }}" defer></script>
+  {{ Configs.theme_header }}
+</head>
+{% set is_home = request.endpoint == 'views.static_html' and request.view_args.get('route') == 'index' %}
+<body class="phantom-theme {{ 'phantom-homepage' if is_home else '' }}">
+  <a class="phantom-skip-link" href="#main-content">{% trans %}Skip to content{% endtrans %}</a>
+  {% include "components/navbar.html" %}
+  <main id="main-content" role="main">
+    {% block content %}{% endblock %}
+  </main>
+  {% include "components/snackbar.html" %}
+  <footer class="footer phantom-footer">
+    <div class="container">
+      <span>{{ Configs.ctf_name }}</span>
+      <a href="https://ctfd.io">Powered by CTFd++</a>
+    </div>
+  </footer>
+  {% include "components/notifications.html" %}
+  {% block scripts %}{{ Assets.js("assets/js/page.js") }}{% endblock %}
+  {{ Plugins.scripts }}
+  {{ Configs.theme_footer }}
+</body>
+</html>
