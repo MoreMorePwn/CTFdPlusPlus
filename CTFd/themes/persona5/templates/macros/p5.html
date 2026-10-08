@@ -1,0 +1,54 @@
+{#- Page header shared by every participant page: kicker tag, calling-card title and the
+    page's Phantom Thief (picked in base.html, exposed as CSS variables). -#}
+{% macro stage(title, kicker=None, modifier=None) -%}
+<header class="p5-stage {{ 'p5-stage--' ~ modifier if modifier }}">
+  <div class="p5-stage__cast" aria-hidden="true">
+    <div class="p5-stage__persona"></div>
+    <div class="p5-stage__thief"></div>
+  </div>
+  <div class="container p5-stage__inner">
+    <p class="p5-stage__kicker">{{ kicker if kicker else '' }}</p>
+    <h1 class="p5-stage__title" data-p5-ransom>{{ title }}</h1>
+    {%- if caller %}
+      <div class="p5-stage__extra">{{ caller() }}</div>
+    {%- endif %}
+  </div>
+</header>
+{%- endmacro %}
+
+{#- Auth-style screen: character poster on one side, the form "card" on the other. -#}
+{% macro infiltrate(title, kicker, flavor=None) -%}
+<section class="p5-auth">
+  <div class="p5-auth__poster">
+    <div class="p5-auth__persona" aria-hidden="true"></div>
+    <div class="p5-auth__thief" aria-hidden="true"></div>
+    <div class="p5-auth__copy">
+      <p class="p5-stage__kicker">{{ kicker }}</p>
+      <h1 class="p5-auth__title" data-p5-ransom>{{ title }}</h1>
+      {% if flavor %}<p class="p5-auth__flavor">{{ flavor }}</p>{% endif %}
+    </div>
+  </div>
+  <div class="p5-auth__panel">
+    <div class="p5-auth__card">
+      {{ caller() }}
+    </div>
+  </div>
+</section>
+{%- endmacro %}
+
+{#- Error screens: a big code number shattered across the stage with Crow standing guard. -#}
+{% macro lost(code, headline, detail=None) -%}
+<section class="p5-lost">
+  <div class="p5-lost__persona" aria-hidden="true"></div>
+  <div class="p5-lost__thief" aria-hidden="true"></div>
+  <div class="container p5-lost__inner">
+    <p class="p5-lost__code" data-p5-ransom>{{ code }}</p>
+    <h1 class="p5-lost__headline">{{ headline }}</h1>
+    {% if detail %}<p class="p5-lost__detail">{{ detail }}</p>{% endif %}
+    <div class="p5-title__actions" data-p5-menu>
+      <a class="p5-cta p5-cta--primary" data-p5-item href="{{ url_for('views.static_html', route='/') }}"><span>{% trans %}Escape to the hideout{% endtrans %}</span></a>
+      <a class="p5-cta" data-p5-item href="{{ url_for('challenges.listing') }}"><span>{% trans %}Challenges{% endtrans %}</span></a>
+    </div>
+  </div>
+</section>
+{%- endmacro %}

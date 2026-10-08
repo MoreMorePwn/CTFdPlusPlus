@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+{#- Each page may `{% set p5_thief = "..." %}` / `p5_kicker` before rendering; otherwise the
+    endpoint decides which NCW mascot takes the stage (see static/img/mascots). -#}
+{%- set p5_cast = {
+  "challenges.listing": ("gamer", "Targets"),
+  "scoreboard.listing": ("crown", "Ranking"),
+  "auth.login": ("money", "Infiltration"),
+  "auth.register": ("trophy", "New recruit"),
+  "auth.reset_password": ("think", "Lost key"),
+  "auth.confirm": ("guide", "Confirmation"),
+  "views.settings": ("guide", "Hideout"),
+  "views.notifications": ("megaphone", "Messages"),
+  "users.listing": ("trophy", "Phantom registry"),
+  "users.private": ("laptop", "Profile"),
+  "users.public": ("laptop", "Profile"),
+  "teams.listing": ("money", "Crews"),
+  "teams.private": ("trophy", "Your crew"),
+  "teams.public": ("trophy", "Crew"),
+  "teams.new": ("megaphone", "Form a crew"),
+  "teams.join": ("megaphone", "Join a crew"),
+  "teams.invite": ("megaphone", "Invitation"),
+} -%}
+{%- set p5_default = p5_cast.get(request.endpoint, ("laptop", "Phantom Thieves")) -%}
+{%- set p5_actor = p5_thief or p5_default[0] -%}
+{%- set p5_label = p5_kicker or p5_default[1] -%}
+{%- set p5_home = request.endpoint == 'views.static_html' and (request.view_args or {}).get('route') == 'index' -%}
+{%- set p5_static = request.script_root ~ '/themes/persona5/static/' -%}
+<html lang="{{ get_locale() }}">
+<head>
+  <title>{{ title or Configs.ctf_name }}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e5191c">
+  {%- set p5_icon = Configs.ctf_small_icon %}
+  {#- Fall back to the NCW eagle unless an admin uploaded their own small icon (served from /files/). #}
+  <link rel="shortcut icon" href="{{ p5_icon if '/files/' in p5_icon else p5_static ~ 'img/logo/eagle-icon.png' }}">
+
+  {{ meta | safe }}
+
+  {% block stylesheets %}
+    {{ Assets.css("assets/scss/main.scss") }}
+    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='persona5', path='css/persona5.css', v='9') }}">
+  {% endblock %}
+
+  {{ Plugins.styles }}
+
+  {{ Assets.js("assets/js/color_mode_switcher.js", type=None) }}
+  <script>
+    {#- The previous page dropped the curtain: paint it before the first frame so its exit flows into this page. -#}
+    try { if (sessionStorage.getItem("p5-wipe")) document.documentElement.classList.add("p5-arriving"); } catch (e) {}
+  </script>
+
+  <script type="text/javascript">
+      window.init = {
+          'urlRoot': {{ request.script_root | tojson }},
+          'csrfNonce': {{ Session.nonce | tojson }},
+          'userMode': {{ Configs.user_mode | tojson }},
+          'userId': {{ Session.id | tojson }},
+          'userName': {{ User.name | tojson }},
+          'userEmail': {{ User.email | tojson }},
+          'userVerified': {{ User.verified | tojson }},
+          'teamId': {{ Team.id | tojson }},
+          'teamName': {{ Team.name | tojson }},
+          'start': {{ Configs.start | tojson }},
+          'end': {{ Configs.end | tojson }},
+          'themeSettings': {{ Configs.theme_settings | tojson }},
+          'eventSounds': [
+            {{ url_for('views.themes_beta', theme='core', path='sounds/notification.webm') | tojson }},
+            {{ url_for('views.themes_beta', theme='core', path='sounds/notification.mp3') | tojson }},
+          ],
+      };
+      window.P5_ASSETS = {{ p5_static | tojson }};
+  </script>
+
+  <script src="{{ url_for('views.themes_beta', theme='persona5', path='vendor/gsap.min.js', v='3.13.0') }}" defer></script>
+  <script src="{{ url_for('views.themes_beta', theme='persona5', path='vendor/CustomEase.min.js', v='3.13.0') }}" defer></script>
+  <script src="{{ url_for('views.themes_beta', theme='persona5', path='vendor/CustomWiggle.min.js', v='3.13.0') }}" defer></script>
+  <script src="{{ url_for('views.themes_beta', theme='persona5', path='js/persona5.js', v='7') }}" defer></script>
+
+  <style>
+    :root {
+      --p5-thief: url({{ (p5_static ~ 'img/mascots/' ~ p5_actor ~ '.webp') | tojson }});
+      --p5-persona: url({{ (p5_static ~ 'img/emblem/eagle-gray.webp') | tojson }});
+      --p5-label: {{ p5_label | upper | tojson }};
+    }
+  </style>
+
+  {{ Configs.theme_header }}
+</head>
+<body class="p5 p5-ep-{{ (request.endpoint or 'error') | replace('.', '-') }} {{ 'p5-home' if p5_home }} {% block body_class %}{% endblock %}" data-p5-actor="{{ p5_actor }}">
+<a class="p5-skip" href="#p5-main">{% trans %}Skip to content{% endtrans %}</a>
+
+<div class="p5-backdrop" aria-hidden="true">
+  <div class="p5-backdrop__burst"></div>
+  <div class="p5-backdrop__dots"></div>
+  <div class="p5-backdrop__shard p5-backdrop__shard--a"></div>
+  <div class="p5-backdrop__shard p5-backdrop__shard--b"></div>
+</div>
+
+{% include "components/navbar.html" %}
+
+<main role="main" id="p5-main">
+  {% block content %}
+  {% endblock %}
+</main>
+
+{% include "components/snackbar.html" %}
+
+<footer class="footer p5-footer">
+  <div class="container">
+    <span class="p5-footer__name">{{ Configs.ctf_name }}</span>
+    <a href="https://ctfd.io" class="p5-footer__credit">{% trans %}Powered by CTFd++{% endtrans %}</a>
+  </div>
+</footer>
+
+{#- Full-screen layers driven by persona5.js -#}
+<div class="p5-leaving" aria-hidden="true">
+  <img class="p5-leaving__car" src="{{ p5_static }}img/deco/car.webp" alt="">
+  <span class="p5-leaving__text">{% trans %}Now loading{% endtrans %}</span>
+</div>
+
+<div class="p5-wipe" aria-hidden="true">
+  <div class="p5-wipe__band p5-wipe__band--red"></div>
+  <div class="p5-wipe__band p5-wipe__band--black"></div>
+  <div class="p5-wipe__band p5-wipe__band--white"></div>
+</div>
+
+<div class="p5-splash" role="status" aria-live="assertive" hidden>
+  <div class="p5-splash__field"></div>
+  <div class="p5-splash__rays"></div>
+  <div class="p5-splash__slash p5-splash__slash--1"></div>
+  <div class="p5-splash__slash p5-splash__slash--2"></div>
+  <div class="p5-splash__slash p5-splash__slash--3"></div>
+  <img class="p5-splash__persona" alt="">
+  <img class="p5-splash__thief" alt="">
+  <div class="p5-splash__copy">
+    <p class="p5-splash__kicker">{% trans %}Treasure secured{% endtrans %}</p>
+    <h2 class="p5-splash__title" id="p5-splash-title" data-p5-ransom="TAKE YOUR TREASURE">TAKE YOUR TREASURE</h2>
+    <p class="p5-splash__meta"><span class="p5-splash__name"></span><span class="p5-splash__value"></span></p>
+  </div>
+  <p class="p5-splash__prompt">
+    <span class="p5-splash__prompt-key" aria-hidden="true">&#9654;</span>
+    {% trans %}Click anywhere to continue{% endtrans %}
+  </p>
+  <div class="p5-splash__flash"></div>
+</div>
+
+{% include "components/notifications.html" %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/page.js") }}
+{% endblock %}
+
+{{ Plugins.scripts }}
+
+{{ Configs.theme_footer }}
+</body>
+</html>

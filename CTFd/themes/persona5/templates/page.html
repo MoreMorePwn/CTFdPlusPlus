@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% from "macros/p5.html" import stage with context %}
+
+{% block content %}
+{% if request.endpoint == 'views.static_html' and (request.view_args or {}).get('route') == 'index' %}
+  {%- set p5s = request.script_root ~ '/themes/persona5/static/' -%}
+  <section class="p5-title" aria-labelledby="p5-title-name">
+    <div class="p5-title__burst" aria-hidden="true"></div>
+    <div class="p5-title__shard" aria-hidden="true"></div>
+    <img class="p5-title__persona" src="{{ p5s }}img/emblem/eagle-dark.webp" alt="" aria-hidden="true">
+    <img class="p5-title__buddy" src="{{ p5s }}img/mascots/money.webp" alt="" aria-hidden="true">
+    <img class="p5-title__thief" src="{{ p5s }}img/mascots/laptop.webp" alt="" aria-hidden="true">
+    <img class="p5-title__card" src="{{ p5s }}img/emblem/eagle.webp" alt="" aria-hidden="true">
+    <img class="p5-title__stars" src="{{ p5s }}img/deco/stars.webp" alt="" aria-hidden="true">
+
+    <div class="container p5-title__inner">
+      <div class="p5-date" data-p5-date aria-hidden="true">
+        <span class="p5-date__md"></span>
+        <span class="p5-date__dow"></span>
+        <span class="p5-date__phase"></span>
+      </div>
+
+      <img class="p5-title__logo"
+           src="{{ url_for('views.files', path=Configs.ctf_logo) if Configs.ctf_logo else p5s ~ 'img/logo/ncw-logo.webp' }}"
+           alt="">
+
+      <p class="p5-title__kicker">{% trans %}A calling card has been sent{% endtrans %}</p>
+      <h1 class="p5-title__name" id="p5-title-name" data-p5-ransom>{{ Configs.ctf_name }}</h1>
+      {% if Configs.ctf_description %}
+        <p class="p5-title__tagline">{{ Configs.ctf_description }}</p>
+      {% endif %}
+
+      <div class="p5-countdown" data-p5-countdown
+           data-label-before="{% trans %}The heist begins in{% endtrans %}"
+           data-label-during="{% trans %}Time left to steal{% endtrans %}"
+           data-label-after="{% trans %}The treasure has been taken{% endtrans %}"
+           data-label-open="{% trans %}The Palace is open{% endtrans %}">
+        <p class="p5-countdown__label"></p>
+        <div class="p5-countdown__clock" aria-live="off">
+          <span class="p5-countdown__unit"><b data-unit="d">--</b><small>{% trans %}Days{% endtrans %}</small></span>
+          <span class="p5-countdown__unit"><b data-unit="h">--</b><small>{% trans %}Hrs{% endtrans %}</small></span>
+          <span class="p5-countdown__unit"><b data-unit="m">--</b><small>{% trans %}Min{% endtrans %}</small></span>
+          <span class="p5-countdown__unit"><b data-unit="s">--</b><small>{% trans %}Sec{% endtrans %}</small></span>
+        </div>
+      </div>
+
+      <div class="p5-title__actions" data-p5-menu>
+        <a class="p5-cta p5-cta--primary" data-p5-item href="{{ url_for('challenges.listing') }}">
+          <span>{% trans %}Enter the Palace{% endtrans %}</span>
+        </a>
+        {% if not authed() %}
+          {% if registration_visible() %}
+            <a class="p5-cta" data-p5-item href="{{ url_for('auth.register') }}"><span>{% trans %}Join the Thieves{% endtrans %}</span></a>
+          {% endif %}
+          <a class="p5-cta" data-p5-item href="{{ url_for('auth.login') }}"><span>{% trans %}Login{% endtrans %}</span></a>
+        {% elif Configs.account_visibility != 'admins' and Configs.score_visibility != 'admins' %}
+          <a class="p5-cta" data-p5-item href="{{ url_for('scoreboard.listing') }}"><span>{% trans %}Scoreboard{% endtrans %}</span></a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  {% if content and content | striptags | trim %}
+    <section class="container p5-calling-card-wrap">
+      <article class="p5-calling-card">
+        <p class="p5-calling-card__head" aria-hidden="true">{% trans %}Calling card{% endtrans %}</p>
+        <div class="p5-calling-card__body p5-prose">
+          {{ content | safe }}
+        </div>
+        <p class="p5-calling-card__sign" aria-hidden="true">&mdash; {% trans %}The Phantom Thieves{% endtrans %}</p>
+      </article>
+    </section>
+  {% endif %}
+{% else %}
+  {{ stage(title or Configs.ctf_name, kicker=Configs.ctf_name) }}
+  <div class="container p5-sheet p5-prose">
+    {{ content | safe }}
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/page.js") }}
+{% endblock %}

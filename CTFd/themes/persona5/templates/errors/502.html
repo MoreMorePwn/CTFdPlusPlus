@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% set p5_thief = "think" %}
+{% set p5_kicker = "502" %}
+{% from "macros/p5.html" import lost with context %}
+
+{% block content %}
+  {{ lost("502", _("502 Bad Gateway"), _("The route to the Palace is blocked. Try again soon.")) }}
+{% endblock %}

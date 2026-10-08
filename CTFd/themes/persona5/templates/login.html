@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "macros/p5.html" import infiltrate with context %}
+
+{% block content %}
+  {% call infiltrate(_("Login"), _("Infiltration"), _("Slip back into the Palace. The treasure won't steal itself.")) %}
+    {% include "components/errors.html" %}
+
+    {% if integrations.mlc() %}
+      <a class="btn btn-secondary btn-lg btn-block w-100" href="{{ url_for('auth.oauth_login') }}">
+        Login with Major League Cyber
+      </a>
+
+      <hr>
+    {% endif %}
+
+    {% with form = Forms.auth.LoginForm() %}
+      <form method="post" accept-charset="utf-8">
+        <div class="mb-3">
+          <b>
+            {{ form.name.label(class="form-label") }}
+            <span class="text-danger">*</span>
+          </b>
+          {{ form.name(class="form-control", value=name, autocomplete="username email") }}
+        </div>
+
+        <div class="mb-3">
+          <b>
+            {{ form.password.label(class="form-label") }}
+            <span class="text-danger">*</span>
+          </b>
+          {{ form.password(class="form-control", value=password, autocomplete="current-password") }}
+        </div>
+
+        <div class="p5-auth__actions">
+          <a class="p5-auth__link" href="{{ url_for('auth.reset_password') }}">
+            {% trans %}Forgot your password?{% endtrans %}
+          </a>
+          {{ form.submit(class="btn btn-primary p5-steal") }}
+        </div>
+
+        {{ form.nonce() }}
+      </form>
+    {% endwith %}
+
+    {% if registration_visible() %}
+      <p class="p5-auth__switch">
+        {% trans %}No codename yet?{% endtrans %}
+        <a href="{{ url_for('auth.register') }}">{% trans %}Register{% endtrans %}</a>
+      </p>
+    {% endif %}
+  {% endcall %}
+{% endblock %}

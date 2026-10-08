@@ -102,3 +102,6 @@ CTFd/themes/*
 !CTFd/themes/beectf/
 !CTFd/themes/ifest2026/
 !CTFd/themes/techfest/
+!CTFd/themes/persona5/
+# Copyrighted flag-success soundtracks: kept out of the public repo, copied in per deployment
+CTFd/themes/persona5/static/sfx/*.mp3

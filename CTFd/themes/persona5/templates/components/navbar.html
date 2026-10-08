@@ -1,0 +1,188 @@
+<nav class="navbar navbar-expand-lg fixed-top p5-nav" data-bs-theme="dark">
+  <div class="container-fluid p5-nav__inner">
+    <a href="{{ url_for('views.static_html', route='/') }}" class="navbar-brand p5-nav__brand">
+      {#- An uploaded CTF logo wins; otherwise the theme's NCW logo. -#}
+      <img
+          class="img-responsive ctf_logo"
+          src="{{ url_for('views.files', path=Configs.ctf_logo) if Configs.ctf_logo else request.script_root ~ '/themes/persona5/static/img/logo/ncw-logo.webp' }}"
+          alt="{{ Configs.ctf_name }}"
+          height="32"
+      >
+    </a>
+
+    <button
+        class="navbar-toggler p5-nav__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#base-navbars"
+        aria-controls="base-navbars" aria-expanded="false" aria-label="{% trans %}Toggle navigation{% endtrans %}"
+    >
+      <span class="p5-nav__toggle-label">{% trans %}Menu{% endtrans %}</span>
+    </button>
+
+    <div class="collapse navbar-collapse p5-nav__collapse" id="base-navbars">
+      <ul class="navbar-nav me-auto p5-menu" data-p5-menu>
+        <li class="nav-item">
+          <a class="nav-link p5-menu__item" data-p5-item href="{{ url_for('challenges.listing') }}"
+             {% if request.endpoint == 'challenges.listing' %}aria-current="page"{% endif %}>
+            <span>{% trans %}Challenges{% endtrans %}</span>
+          </a>
+        </li>
+
+        {% if Configs.account_visibility != 'admins' and Configs.score_visibility != 'admins' %}
+          <li class="nav-item">
+            <a class="nav-link p5-menu__item" data-p5-item href="{{ url_for('scoreboard.listing') }}"
+               {% if request.endpoint == 'scoreboard.listing' %}aria-current="page"{% endif %}>
+              <span>{% trans %}Scoreboard{% endtrans %}</span>
+            </a>
+          </li>
+        {% endif %}
+
+        {% if Configs.account_visibility != 'admins' %}
+          <li class="nav-item">
+            <a class="nav-link p5-menu__item" data-p5-item href="{{ url_for('users.listing') }}"
+               {% if request.endpoint == 'users.listing' %}aria-current="page"{% endif %}>
+              <span>{% trans %}Users{% endtrans %}</span>
+            </a>
+          </li>
+
+          {% if Configs.user_mode == 'teams' %}
+            <li class="nav-item">
+              <a class="nav-link p5-menu__item" data-p5-item href="{{ url_for('teams.listing') }}"
+                 {% if request.endpoint == 'teams.listing' %}aria-current="page"{% endif %}>
+                <span>{% trans %}Teams{% endtrans %}</span>
+              </a>
+            </li>
+          {% endif %}
+        {% endif %}
+
+        {% for page in Plugins.user_menu_pages %}
+          <li class="nav-item">
+            <a class="nav-link p5-menu__item" data-p5-item href="{{ page.route }}" {% if page.link_target %}target="{{ page.link_target }}"{% endif %}>
+              <span>{{ page.title }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <ul class="navbar-nav ms-lg-auto p5-tools" data-p5-menu>
+        {% if authed() %}
+          {% if is_admin_panel_user() %}
+            <li class="nav-item">
+              <a class="nav-link p5-tools__item" data-p5-item href="{{ url_for('admin.view') }}" title="{% trans %}Admin Panel{% endtrans %}">
+                <i class="fas fa-wrench" aria-hidden="true"></i>
+                <span class="p5-tools__label">{% trans %}Admin Panel{% endtrans %}</span>
+              </a>
+            </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link p5-tools__item" data-p5-item href="{{ url_for('views.notifications') }}" title="{% trans %}Notifications{% endtrans %}">
+              <i class="fas fa-bell" aria-hidden="true"></i>
+              <span x-data x-show="$store.unread_count > 0" x-text="$store.unread_count" class="badge rounded-pill bg-danger badge-notification p5-tools__badge"></span>
+              <span class="p5-tools__label">{% trans %}Notifications{% endtrans %}</span>
+            </a>
+          </li>
+
+          {% if Configs.user_mode == "teams" %}
+            <li class="nav-item">
+              <a class="nav-link p5-tools__item" data-p5-item href="{{ url_for('teams.private') }}" title="{% trans %}Team{% endtrans %}">
+                <i class="fas fa-users" aria-hidden="true"></i>
+                <span class="p5-tools__label">{% trans %}Team{% endtrans %}</span>
+              </a>
+            </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link p5-tools__item" data-p5-item href="{{ url_for('users.private') }}" title="{% trans %}Profile{% endtrans %}">
+              <i class="fas fa-user-circle" aria-hidden="true"></i>
+              <span class="p5-tools__label">{% trans %}Profile{% endtrans %}</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link p5-tools__item" data-p5-item href="{{ url_for('views.settings') }}" title="{% trans %}Settings{% endtrans %}">
+              <i class="fas fa-cogs" aria-hidden="true"></i>
+              <span class="p5-tools__label">{% trans %}Settings{% endtrans %}</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link p5-tools__item" data-p5-item href="{{ url_for('auth.logout') }}" title="{% trans %}Logout{% endtrans %}">
+              <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+              <span class="p5-tools__label">{% trans %}Logout{% endtrans %}</span>
+            </a>
+          </li>
+        {% else %}
+          {% if registration_visible() %}
+            <li class="nav-item">
+              <a class="nav-link p5-tools__item p5-tools__item--text" data-p5-item href="{{ url_for('auth.register') }}">
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                <span>{% trans %}Register{% endtrans %}</span>
+              </a>
+            </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link p5-tools__item p5-tools__item--text" data-p5-item href="{{ url_for('auth.login') }}">
+              <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+              <span>{% trans %}Login{% endtrans %}</span>
+            </a>
+          </li>
+        {% endif %}
+
+        <li class="nav-item dropdown">
+          <button class="nav-link dropdown-toggle p5-tools__item" data-p5-item type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{% trans %}Change language{% endtrans %}">
+            <i class="fas fa-language" aria-hidden="true"></i>
+            <span class="p5-tools__label">{% trans %}Change language{% endtrans %}</span>
+          </button>
+          <form x-data="LanguageForm">
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% set curr_lang = get_locale() %}
+              {%- for lang in Languages.names.items() %}
+              <li>
+                  <span class="dropdown-item {{ 'active' if (curr_lang == lang[0]) }}" @click="set" value="{{ lang[0] }}">
+                    {{ lang[1] }}
+                  </span>
+              </li>
+              {%- endfor %}
+            </ul>
+          </form>
+        </li>
+
+        <li class="nav-item dropdown p5-volume">
+          <button class="nav-link dropdown-toggle p5-tools__item p5-sound" data-p5-item type="button"
+                  data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                  title="{% trans %}Sound effects{% endtrans %}">
+            <i class="fas fa-volume-xmark" aria-hidden="true"></i>
+            <span class="p5-tools__label">{% trans %}Sound effects{% endtrans %}</span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end p5-volume__menu">
+            <div class="p5-volume__head">
+              <label class="p5-volume__label" for="p5-volume-range">{% trans %}SFX volume{% endtrans %}</label>
+              <output class="p5-volume__value" for="p5-volume-range">80%</output>
+            </div>
+            <div class="p5-volume__row">
+              <button type="button" class="p5-volume__mute" aria-pressed="true" title="{% trans %}Mute{% endtrans %}">
+                <i class="fas fa-volume-xmark" aria-hidden="true"></i>
+                <span class="visually-hidden">{% trans %}Mute{% endtrans %}</span>
+              </button>
+              {#- The bars are the visible scale; the range input on top does the work (keyboard, touch, screen readers). -#}
+              <div class="p5-volume__meter">
+                <div class="p5-volume__bars" aria-hidden="true">
+                  {%- for i in range(10) %}<i style="--n: {{ i }}"></i>{% endfor -%}
+                </div>
+                <input type="range" id="p5-volume-range" class="p5-volume__range" min="0" max="100" step="10" value="80">
+              </div>
+            </div>
+            <p class="p5-volume__hint">{% trans %}Muted by default. Drag, click a bar or use the arrow keys.{% endtrans %}</p>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <button class="nav-link theme-switch p5-tools__item" data-p5-item type="button" title="{% trans %}Toggle theme{% endtrans %}">
+            <i class="fas fa-sun" aria-hidden="true"></i>
+            <span class="p5-tools__label">{% trans %}Toggle theme{% endtrans %}</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

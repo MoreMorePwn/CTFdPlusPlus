@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% from "macros/p5.html" import stage with context %}
+
+{% block content %}
+  {{ stage(_("Challenges"), kicker=_("Targets")) }}
+
+  <div class="container p5-board-wrap">
+    <div class="row">
+      <div class="col-md-12">
+        {% include "components/errors.html" %}
+      </div>
+    </div>
+
+    <div
+      x-data="ChallengeBoard"
+      @load-challenges.window="loadChallenges()"
+      @load-challenge.window="loadChallenge($event.detail)"
+    >
+      <div
+          x-ref="challengeWindow" id="challenge-window" class="modal fade p5-challenge-modal" tabindex="-1" role="dialog" x-data=""
+          x-html="$store.challenge.data.view"
+      ></div>
+
+      <div x-show="!loaded">
+        <div class="p5-loading" role="status">
+          <span class="p5-loading__mona" aria-hidden="true"></span>
+          <span class="p5-loading__text">{% trans %}Loading{% endtrans %}</span>
+        </div>
+      </div>
+
+      <div x-show="loaded" x-cloak x-data="{ p5cat: null }" class="p5-board">
+        <aside class="p5-board__menu">
+          <p class="p5-board__menu-title" aria-hidden="true">{% trans %}Categories{% endtrans %}</p>
+          <ul class="p5-catmenu" data-p5-menu data-p5-vertical>
+            <li>
+              <button type="button" class="p5-catmenu__item" data-p5-item
+                      :aria-pressed="(p5cat === null).toString()" @click="p5cat = null">
+                <span class="p5-catmenu__name">{% trans %}All{% endtrans %}</span>
+                <span class="p5-catmenu__count" x-text="challenges.filter(c => c.solved_by_me).length + '/' + challenges.length"></span>
+              </button>
+            </li>
+            <template x-for="(category, idx) in getCategories()" :key="category">
+              <li>
+                <button type="button" class="p5-catmenu__item" data-p5-item
+                        :aria-pressed="(p5cat === category).toString()" @click="p5cat = category">
+                  <span class="p5-catmenu__name" x-text="category"></span>
+                  <span class="p5-catmenu__count" x-text="challenges.filter(c => c.category === category && c.solved_by_me).length + '/' + challenges.filter(c => c.category === category).length"></span>
+                </button>
+              </li>
+            </template>
+          </ul>
+        </aside>
+
+        <div class="p5-board__targets">
+          <template x-for="(category, idx) in getCategories()" :key="category">
+            <section class="p5-category" x-show="p5cat === null || p5cat === category">
+              <header class="category-header p5-category__head">
+                <h3 x-text="category"></h3>
+              </header>
+
+              <div class="category-challenges p5-cards">
+                <template x-for="(c, cidx) in getChallenges(category)" :key="c.id">
+                  <button
+                      type="button"
+                      class="challenge-button p5-card"
+                      :class="[
+                        c.solved_by_me ? 'challenge-solved' : '',
+                        ...c.tags.map((tag) => `tag-${tag.value.replace(/ /g, '-')}`),
+                      ];"
+                      :value="c.id" @click="loadChallenge(c.id)"
+                  >
+                    <span class="p5-card__value" x-text="c.value"></span>
+                    <span class="p5-card__name" x-text="c.name"></span>
+                    <span class="p5-card__meta" x-show="c.solves !== undefined && c.solves !== null">
+                      <i class="fas fa-user-secret" aria-hidden="true"></i>
+                      <span x-text="c.solves"></span>
+                    </span>
+                    <span class="p5-card__stamp" aria-hidden="true" x-show="c.solved_by_me">{% trans %}Stolen{% endtrans %}</span>
+                  </button>
+                </template>
+              </div>
+            </section>
+          </template>
+
+          <p class="p5-empty" x-show="loaded && challenges.length === 0">{% trans %}No targets yet. The Palace is quiet.{% endtrans %}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/challenges.js") }}
+{% endblock %}
