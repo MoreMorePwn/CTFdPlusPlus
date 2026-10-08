@@ -61,14 +61,10 @@
   </section>
 
   {% if content and content | striptags | trim %}
-    <section class="container p5-calling-card-wrap">
-      <article class="p5-calling-card">
-        <p class="p5-calling-card__head" aria-hidden="true">{% trans %}Calling card{% endtrans %}</p>
-        <div class="p5-calling-card__body p5-prose">
-          {{ content | safe }}
-        </div>
-        <p class="p5-calling-card__sign" aria-hidden="true">&mdash; {% trans %}The Phantom Thieves{% endtrans %}</p>
-      </article>
+    <section class="container p5-home-content">
+      <div class="p5-sheet p5-prose">
+        {{ content | safe }}
+      </div>
     </section>
   {% endif %}
 {% else %}
