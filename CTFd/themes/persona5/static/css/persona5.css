@@ -1052,42 +1052,8 @@ body.p5 .p5-volume__menu {
 .p5-countdown__unit small { font-family: var(--p5-display); letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.75rem; transform: skewX(10deg); }
 .p5-countdown.is-over .p5-countdown__clock { display: none; }
 
-.p5-calling-card-wrap { margin-top: -2rem; position: relative; z-index: 3; }
-.p5-calling-card {
-  position: relative;
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 2.5rem clamp(1.25rem, 4vw, 3.5rem) 2rem;
-  background:
-    radial-gradient(rgba(0, 0, 0, 0.18) 22%, transparent 24%) 0 0 / 10px 10px,
-    var(--p5-red);
-  color: #fff;
-  transform: rotate(-1deg);
-  clip-path: polygon(0 3%, 4% 0, 100% 2%, 98% 96%, 100% 100%, 3% 98%, 0 100%);
-}
-.p5-calling-card-wrap { filter: drop-shadow(12px 12px 0 var(--p5-black)); }
-[data-bs-theme="dark"] .p5-calling-card-wrap { filter: drop-shadow(12px 12px 0 var(--p5-white)); }
-.p5-calling-card__head {
-  margin: 0 0 1.25rem;
-  font-family: var(--p5-display);
-  font-size: 2.2rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.p5-calling-card__body {
-  padding: 1.5rem clamp(1rem, 3vw, 2rem);
-  background: var(--p5-black);
-  color: #fff;
-  transform: rotate(0.8deg);
-}
-.p5-calling-card__body a { color: var(--p5-cyan); }
-.p5-calling-card__sign {
-  margin: 1.25rem 0 0;
-  text-align: right;
-  font-family: "Special Elite", monospace;
-  font-size: 1.15rem;
-  text-transform: uppercase;
-}
+/* Homepage content below the title screen, in the standard panel. */
+.p5-home-content { position: relative; z-index: 3; max-width: 900px; margin-top: 2.5rem; }
 
 @media (max-width: 991.98px) {
   .p5-title { padding-bottom: 7rem; align-items: flex-start; }
