@@ -31,9 +31,24 @@ def test_phantom_preserves_pages_and_event_identity(phantom_app):
         assert "Competition rules remain visible." in html
         assert "phantom/static/css/phantom.css" in html
         assert "phantom.dev.css" not in html
-        assert phantom_app.test_client().get("/themes/phantom/static/css/phantom.css").status_code == 200
-        assert phantom_app.test_client().get("/themes/phantom/static/js/phantom.js").status_code == 200
-        assert phantom_app.test_client().get("/themes/phantom/static/img/city.webp").status_code == 200
+        assert (
+            phantom_app.test_client()
+            .get("/themes/phantom/static/css/phantom.css")
+            .status_code
+            == 200
+        )
+        assert (
+            phantom_app.test_client()
+            .get("/themes/phantom/static/js/phantom.js")
+            .status_code
+            == 200
+        )
+        assert (
+            phantom_app.test_client()
+            .get("/themes/phantom/static/img/city.webp")
+            .status_code
+            == 200
+        )
 
 
 def test_phantom_core_fallback_and_admin_isolation(phantom_app):
@@ -44,7 +59,14 @@ def test_phantom_core_fallback_and_admin_isolation(phantom_app):
             assert response.status_code == 200
             assert 'class="phantom-theme ' in response.get_data(as_text=True)
         with login_as_user(phantom_app, "admin") as admin:
-            for route in ("/challenges", "/scoreboard", "/users", "/settings", "/notifications", "/user"):
+            for route in (
+                "/challenges",
+                "/scoreboard",
+                "/users",
+                "/settings",
+                "/notifications",
+                "/user",
+            ):
                 response = admin.get(route)
                 assert response.status_code == 200
                 assert 'class="phantom-theme ' in response.get_data(as_text=True)
