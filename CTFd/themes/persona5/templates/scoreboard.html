@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% from "macros/p5.html" import stage with context %}
+
+{% block content %}
+  {{ stage(_("Scoreboard"), kicker=_("Ranking")) }}
+
+  <div class="container p5-rank-wrap">
+    {% include "components/errors.html" %}
+
+    <div class="p5-graph">
+      <div id="score-graph" class="align-items-center" :class="{'d-flex': show, 'd-none': !show}" x-data="ScoreboardDetail" x-ref="scoregraph" @bracket-change.window="activeBracket=$event.detail; update();">
+        <div class="col-md-12 text-center">
+          <div class="p5-loading" role="status">
+            <span class="p5-loading__mona" aria-hidden="true"></span>
+            <span class="p5-loading__text">{% trans %}Loading{% endtrans %}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="scoreboard" class="p5-rank" x-data="ScoreboardList">
+      <template x-if="brackets.length && standings.length">
+        <nav class="p5-brackets" data-p5-menu>
+          <button type="button" data-p5-item :class="{'p5-brackets__item': true, 'active': !activeBracket}" @click="activeBracket=null">{% trans %}All{% endtrans %}</button>
+          <template x-for="bracket in brackets">
+            <button type="button" data-p5-item :class="{'p5-brackets__item': true, 'active': activeBracket == bracket.id}" x-text="bracket.name" @click="activeBracket=bracket.id"></button>
+          </template>
+        </nav>
+      </template>
+
+      <div x-show="standings.length">
+        {#- Top three take the podium; everyone keeps their real place number. -#}
+        <ol class="p5-podium" aria-label="{% trans %}Top three{% endtrans %}">
+          <template x-for="(standing, index) in standings.filter(i => activeBracket ? i.bracket_id==activeBracket : true).slice(0, 3)" :key="standing.account_id + '-' + index">
+            <li class="p5-podium__slot" :class="'p5-podium__slot--' + (index + 1)">
+              <span class="p5-podium__place" x-text="index + 1"></span>
+              <a class="p5-podium__name" :href="standing.account_url" x-text="standing.name"></a>
+              <span class="p5-podium__score"><span x-text="standing.score"></span> <small>{% trans %}pts{% endtrans %}</small></span>
+              <template x-if="standing.bracket_name">
+                <span class="p5-tag" x-text="standing.bracket_name"></span>
+              </template>
+            </li>
+          </template>
+        </ol>
+
+        <table class="table p5-table align-middle">
+          <thead>
+          <tr>
+            <th style="width: 10px">{% trans %}Place{% endtrans %}</th>
+            <th class="text-start ps-3">{{ get_mode_as_word(capitalize=True) }}</th>
+            <th class="text-end">{% trans %}Score{% endtrans %}</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            <template x-for="(standing, index) in standings.filter(i => activeBracket ? i.bracket_id==activeBracket : true)">
+              <tr :class="index < 3 ? 'p5-table__top' : ''">
+                <th scope="row" class="text-center p5-table__place" x-text="index + 1"></th>
+                <td class="text-start">
+                  <a :href="standing.account_url" x-text="standing.name"></a>
+                  <template x-if="standing.bracket_name">
+                    <span class="p5-tag ms-2" x-text="standing.bracket_name"></span>
+                  </template>
+                </td>
+                <td class="text-end p5-table__score" x-text="standing.score"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+
+      <div x-show="! standings.length">
+        <p class="p5-empty">{% trans %}Scoreboard is empty{% endtrans %}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    {#- Merged into core's echarts option: match the P5 palette and type. -#}
+    window.scoreboardChartOptions = {
+      color: ["#e5191c", "#ffffff", "#ffd400", "#00e5ff", "#ff6fae", "#7cff6b", "#b388ff", "#ff9100", "#9e9e9e", "#4dd0e1"],
+      textStyle: { fontFamily: "Lato, sans-serif" },
+      title: { textStyle: { fontFamily: "Anton, Impact, sans-serif", fontSize: 22, fontWeight: "normal", color: "#e5191c" } },
+    };
+  </script>
+  {{ Assets.js("assets/js/scoreboard.js") }}
+{% endblock %}
