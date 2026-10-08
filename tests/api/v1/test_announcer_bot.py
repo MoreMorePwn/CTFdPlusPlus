@@ -248,7 +248,12 @@ def test_announcer_resends_saved_log_payload():
         response = Mock(status_code=204, text="")
         with patch("CTFd.utils.announcer_bot.requests.post", return_value=response) as post:
             with login_as_user(app, "admin") as client:
-                r = client.post(f"/api/v1/announcer-bot/logs/{original_id}/resend")
+                assert client.post(
+                    f"/api/v1/announcer-bot/logs/{original_id}/resend"
+                ).status_code == 403
+                r = client.post(
+                    f"/api/v1/announcer-bot/logs/{original_id}/resend", json={}
+                )
 
         assert r.status_code == 200
         assert post.call_count == 1
@@ -286,7 +291,9 @@ def test_announcer_resend_requires_saved_payload():
         original_id = original.id
 
         with login_as_user(app, "admin") as client:
-            r = client.post(f"/api/v1/announcer-bot/logs/{original_id}/resend")
+            r = client.post(
+                f"/api/v1/announcer-bot/logs/{original_id}/resend", json={}
+            )
 
         assert r.status_code == 400
         assert r.get_json()["errors"]["payload"] == [

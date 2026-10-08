@@ -125,7 +125,7 @@ def test_ticket_creation_publishes_realtime_event():
     """Ticket creation publishes a minimal SSE wake-up event"""
     app = create_ctfd(user_mode="teams")
     with app.app_context():
-        team = gen_team(db, name="realtime_team", member_count=1)
+        team_id = gen_team(db, name="realtime_team", member_count=1).id
         published = []
 
         def capture_event(data, type=None, id=None, channel="ctf"):
@@ -144,7 +144,7 @@ def test_ticket_creation_publishes_realtime_event():
             r = client.post(
                 "/api/v1/tickets",
                 json={
-                    "target_id": team.id,
+                    "target_id": team_id,
                     "title": "Realtime ticket",
                     "message": "Open now",
                     "notification_type": "toast",

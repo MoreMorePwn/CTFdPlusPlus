@@ -12,6 +12,9 @@ Use `./run.sh` as the entrypoint for this deployment. Running `./run.sh` with no
 
 After startup, open CTFd++ at `http://<server>/` or `http://<server>:8000/`.
 
+For development, run `uv sync` and `uv run serve.py` with Python 3.11.
+`requirements.txt` is generated from `uv.lock` for pip and Docker installations.
+
 ## Features Added in CTFd++
 
 ### Reset and Automatic Exports

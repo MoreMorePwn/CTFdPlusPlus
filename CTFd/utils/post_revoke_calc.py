@@ -21,10 +21,9 @@ from CTFd.models import (
     db,
 )
 from CTFd.plugins.challenges.decay import DECAY_FUNCTIONS
-from CTFd.utils.countries import lookup_country_code
 from CTFd.utils import config as ctf_config
 from CTFd.utils import get_config
-
+from CTFd.utils.countries import lookup_country_code
 
 ACCOUNT_TYPE_TEAMS = "team"
 ACCOUNT_TYPE_USERS = "user"

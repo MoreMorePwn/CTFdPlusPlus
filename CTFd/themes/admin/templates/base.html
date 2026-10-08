@@ -42,7 +42,7 @@
 	{% set current_path = request.path %}
 	{% set plugin_menu = get_admin_plugin_menu_bar() if admin_can('plugins') else [] %}
 	{% set plugins = get_menubar_plugins() if admin_can('plugins') else [] %}
-	{% set has_content_links = admin_can('challenges') or admin_can('pages') %}
+	{% set has_content_links = admin_can('challenges') or admin_can('pages') or admin_can('modules') or admin_can('audiences') %}
 	{% set has_player_links = admin_can('users_read') or (get_config('user_mode') == 'teams' and admin_can('teams_read')) %}
 	{% set has_review_links = admin_can('submissions_read') or admin_can('anti_cheat') or admin_can('tickets') or admin_can('notifications') %}
 	{% set has_scoring_links = admin_can('scoreboard') or admin_can('post_revoke_calc_read') %}
@@ -92,6 +92,12 @@
 				<div class="admin-sidebar-heading">Content</div>
 				{% if admin_can('challenges') %}
 					{{ sidebar_link('admin.challenges_listing', 'Challenges', 'fas fa-flag', 'admin.challenges') }}
+				{% endif %}
+				{% if admin_can('modules') %}
+					{{ sidebar_link('admin.modules_listing', 'Modules', 'fas fa-layer-group', 'admin.modules') }}
+				{% endif %}
+				{% if admin_can('audiences') %}
+					{{ sidebar_link('admin.audiences_listing', 'Audiences', 'fas fa-users', 'admin.audiences') }}
 				{% endif %}
 				{% if admin_can('pages') %}
 					{{ sidebar_link('admin.pages_listing', 'Pages', 'fas fa-file-alt', 'admin.pages') }}

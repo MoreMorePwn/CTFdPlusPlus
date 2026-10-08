@@ -9,6 +9,7 @@ from CTFd.plugins import register_plugin_assets_directory
 from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
 from CTFd.plugins.dynamic_challenges.decay import DECAY_FUNCTIONS, logarithmic
 from CTFd.plugins.migrations import upgrade
+from CTFd.utils.dates import parse_iso_datetime
 
 
 class DynamicChallenge(Challenges):
@@ -64,13 +65,11 @@ class DynamicChallenge(Challenges):
 class DynamicValueChallenge(BaseChallenge):
     id = "dynamic"  # Unique identifier used to register challenges
     name = "dynamic"  # Name of a challenge type
-    templates = (
-        {  # Handlebars templates used for each aspect of challenge editing & viewing
-            "create": "/plugins/dynamic_challenges/assets/create.html",
-            "update": "/plugins/dynamic_challenges/assets/update.html",
-            "view": "/plugins/dynamic_challenges/assets/view.html",
-        }
-    )
+    templates = {  # Handlebars templates used for each aspect of challenge editing & viewing
+        "create": "/plugins/dynamic_challenges/assets/create.html",
+        "update": "/plugins/dynamic_challenges/assets/update.html",
+        "view": "/plugins/dynamic_challenges/assets/view.html",
+    }
     scripts = {  # Scripts that are loaded when a template is loaded
         "create": "/plugins/dynamic_challenges/assets/create.js",
         "update": "/plugins/dynamic_challenges/assets/update.js",
@@ -127,6 +126,11 @@ class DynamicValueChallenge(BaseChallenge):
         :return:
         """
         data = cls.normalize_request_data(request)
+        if "scheduled_at" in data:
+            try:
+                data["scheduled_at"] = parse_iso_datetime(data["scheduled_at"])
+            except ValueError:
+                raise ChallengeUpdateException("Invalid input for 'scheduled_at'")
 
         for attr, value in data.items():
             # We need to set these to floats so that the next operations don't operate on strings

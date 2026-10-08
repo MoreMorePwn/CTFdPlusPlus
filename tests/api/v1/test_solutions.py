@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from CTFd.models import Challenges, Solutions, SolutionUnlocks
+from CTFd.models import Challenges, SolutionFiles, Solutions, SolutionUnlocks, Unlocks
 from CTFd.utils import set_config
 from tests.helpers import (
     create_ctfd,
@@ -212,6 +212,29 @@ def test_api_solutions_get_detail_non_admin_unlocked():
     destroy_ctfd(app)
 
 
+def test_api_solution_unlock_stores_ip():
+    """Test that unlocking a solution stores the request IP address"""
+    app = create_ctfd()
+    with app.app_context():
+        gen_challenge(app.db)
+        solution = gen_solution(app.db, challenge_id=1, state="visible")
+        solution_id = solution.id
+        register_user(app)
+
+        with login_as_user(app) as client:
+            r = client.post(
+                "/api/v1/unlocks",
+                json={"target": solution_id, "type": "solutions"},
+                environ_base={"REMOTE_ADDR": "203.0.113.11"},
+            )
+            assert r.status_code == 200
+
+            unlock = Unlocks.query.first()
+            assert unlock.ip == "203.0.113.11"
+            assert r.get_json()["data"]["ip"] == "203.0.113.11"
+    destroy_ctfd(app)
+
+
 def test_api_solutions_get_detail_admin():
     """Can an admin user get /api/v1/solutions/<solution_id>"""
     app = create_ctfd()
@@ -332,6 +355,60 @@ def test_api_solutions_delete_admin():
             # Verify solution was deleted from database
             deleted_solution = Solutions.query.get(solution_id)
             assert deleted_solution is None
+    destroy_ctfd(app)
+
+
+def test_api_solutions_delete_admin_with_files_and_unlocks():
+    """Can an admin delete a solution that has associated files and unlocks"""
+    app = create_ctfd()
+    with app.app_context():
+        gen_challenge(app.db)
+        solution = gen_solution(app.db, challenge_id=1)
+        solution_id = solution.id
+        solution_file = SolutionFiles(
+            solution_id=solution_id, location="abc123/solution.png"
+        )
+        app.db.session.add(solution_file)
+        # Associate an unlock targeting the solution (admin is user id 1)
+        unlock = SolutionUnlocks(user_id=1, target=solution_id)
+        app.db.session.add(unlock)
+        app.db.session.commit()
+        solution_file_id = solution_file.id
+
+        with login_as_user(app, "admin") as client:
+            r = client.delete(f"/api/v1/solutions/{solution_id}", json="")
+            assert r.status_code == 200
+            assert r.get_json()["success"] is True
+
+        assert Solutions.query.get(solution_id) is None
+        assert SolutionFiles.query.get(solution_file_id) is None
+        assert SolutionUnlocks.query.filter_by(target=solution_id).count() == 0
+    destroy_ctfd(app)
+
+
+def test_api_challenge_delete_removes_solution_and_files():
+    """Does deleting a challenge clean up its solution and solution files"""
+    app = create_ctfd()
+    with app.app_context():
+        gen_challenge(app.db)
+        solution = gen_solution(app.db, challenge_id=1)
+        solution_id = solution.id
+
+        solution_file = SolutionFiles(
+            solution_id=solution_id, location="abc123/solution.png"
+        )
+        app.db.session.add(solution_file)
+        app.db.session.commit()
+        solution_file_id = solution_file.id
+
+        with login_as_user(app, "admin") as client:
+            r = client.delete("/api/v1/challenges/1", json="")
+            assert r.status_code == 200
+            assert r.get_json()["success"] is True
+
+        assert Challenges.query.get(1) is None
+        assert Solutions.query.get(solution_id) is None
+        assert SolutionFiles.query.get(solution_file_id) is None
     destroy_ctfd(app)
 
 
@@ -972,29 +1049,21 @@ def test_api_complete_solution_unlock_flow():
             assert r.status_code == 404
 
             # Step 16: Other user attempts to unlock the solution
-            # Should succeed in creating the unlock record
+            # Should fail because they haven't solved the challenge
             r = other_client.post(
                 "/api/v1/unlocks",
                 json={"target": solution_id, "type": "solutions"},
             )
-            assert r.status_code == 200
-            unlock_data = r.get_json()
-            assert unlock_data["success"] is True
-            assert unlock_data["data"]["target"] == solution_id
-            assert unlock_data["data"]["type"] == "solutions"
-            assert unlock_data["data"]["user_id"] == other_user_id
+            assert r.status_code == 403
 
-            # Step 17: Verify the unlock was recorded for the other user
+            # Step 17: Verify no unlock was recorded for the other user
             other_unlock = SolutionUnlocks.query.filter_by(
                 user_id=other_user_id, target=solution_id
             ).first()
-            assert other_unlock is not None
-            assert other_unlock.user_id == other_user_id
-            assert other_unlock.target == solution_id
+            assert other_unlock is None
 
-            # Step 18: Other user tries to view the solution AGAIN after unlocking
+            # Step 18: Other user tries to view the solution again
             # Should STILL return 404 because they haven't solved the challenge
-            # (unlock without solve should not grant access to "solved" state solutions)
             r = other_client.get(f"/api/v1/solutions/{solution_id}")
             assert r.status_code == 404
 
@@ -1028,8 +1097,20 @@ def test_api_complete_solution_unlock_flow():
             assert data["success"] is True
             assert data["data"]["solution_id"] == solution_id  # Now visible!
 
+            # Other user can now unlock the solution
+            r = other_client.post(
+                "/api/v1/unlocks",
+                json={"target": solution_id, "type": "solutions"},
+            )
+            assert r.status_code == 200
+            unlock_data = r.get_json()
+            assert unlock_data["success"] is True
+            assert unlock_data["data"]["target"] == solution_id
+            assert unlock_data["data"]["type"] == "solutions"
+            assert unlock_data["data"]["user_id"] == other_user_id
+
             # Step 21: Other user can now view the solution with full content
-            # (because they both solved AND already unlocked it)
+            # (because they both solved AND unlocked it)
             r = other_client.get(f"/api/v1/solutions/{solution_id}")
             assert r.status_code == 200
             data = r.get_json()
@@ -1040,5 +1121,27 @@ def test_api_complete_solution_unlock_flow():
             assert "content" in data["data"]
             assert data["data"]["content"] == "This is the detailed solution content"
             assert "html" in data["data"]
+
+    destroy_ctfd(app)
+
+
+def test_api_solutions_scheduled_at_blocked():
+    """A visible solution for a future-scheduled challenge is 404 for non-admins"""
+    import datetime
+
+    app = create_ctfd()
+    with app.app_context():
+        future = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+        gen_challenge(app.db, scheduled_at=future)
+        solution_id = gen_solution(app.db, challenge_id=1, state="visible").id
+        register_user(app)
+
+        with login_as_user(app) as client:
+            r = client.get(f"/api/v1/solutions/{solution_id}")
+            assert r.status_code == 404
+
+        with login_as_user(app, "admin") as admin:
+            r = admin.get(f"/api/v1/solutions/{solution_id}")
+            assert r.status_code == 200
 
     destroy_ctfd(app)

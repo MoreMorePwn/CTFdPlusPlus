@@ -17,9 +17,8 @@ from CTFd.exceptions.challenges import (
     ChallengeUpdateException,
 )
 from CTFd.models import ChallengeFiles as ChallengeFilesModel
-from CTFd.models import Challenges
-from CTFd.models import ChallengeTopics as ChallengeTopicsModel
 from CTFd.models import (
+    Challenges,
     Fails,
     Flags,
     Hints,
@@ -31,6 +30,7 @@ from CTFd.models import (
     Tracking,
     db,
 )
+from CTFd.models import ChallengeTopics as ChallengeTopicsModel
 from CTFd.plugins.challenges import CHALLENGE_CLASSES, get_chal_class
 from CTFd.schemas.challenges import ChallengeSchema
 from CTFd.schemas.flags import FlagSchema
@@ -70,6 +70,7 @@ from CTFd.utils.decorators.visibility import (
 )
 from CTFd.utils.humanize.words import pluralize
 from CTFd.utils.logging import log
+from CTFd.utils.modules import can_access_challenge, get_accessible_module_ids
 from CTFd.utils.security.signing import serialize
 from CTFd.utils.user import (
     authed,
@@ -187,6 +188,7 @@ class ChallengeList(Resource):
             user = get_current_user()
             user_solves = get_solve_ids_for_user_id(user_id=user.id)
         else:
+            user = None
             user_solves = set()
 
         # Aggregate the query results into the hashes defined at the top of
@@ -201,6 +203,16 @@ class ChallengeList(Resource):
             solve_count_dfl = None
 
         chal_q = get_all_challenges(admin=admin_view, field=field, q=q, **query_args)
+
+        # Filter out challenges in modules the current account can't access.
+        # Ungrouped challenges (module_id is None) remain visible to everyone.
+        if not admin_view:
+            accessible_modules = get_accessible_module_ids(user)
+            chal_q = [
+                c
+                for c in chal_q
+                if c.module_id is None or c.module_id in accessible_modules
+            ]
 
         # Iterate through the list of challenges, adding to the object which
         # will be JSONified back to the client
@@ -271,6 +283,7 @@ class ChallengeList(Resource):
                     "solves": solve_counts.get(challenge.id, solve_count_dfl),
                     "solved_by_me": challenge.id in user_solves,
                     "category": challenge.category,
+                    "module_id": challenge.module_id,
                     "tags": challenge.tags,
                     "template": challenge_type.templates["view"],
                     "script": challenge_type.scripts["view"],
@@ -358,6 +371,8 @@ class Challenge(Resource):
                 Challenges.id == challenge_id,
                 and_(Challenges.state != "hidden", Challenges.state != "locked"),
             ).first_or_404()
+            if not can_access_challenge(chal, get_current_user()):
+                abort(404)
 
         try:
             chal_class = get_chal_class(chal.type)
@@ -540,6 +555,7 @@ class Challenge(Resource):
         response["files"] = files
         response["tags"] = tags
         response["hints"] = hints
+        response["module_id"] = chal.module_id
 
         # If we didn't disable ratings then we should allow the user to see their own challenge rating
         if get_config("challenge_ratings", default="public") != "disabled":
@@ -734,6 +750,9 @@ class ChallengeAttempt(Resource):
 
         if challenge.state == "locked":
             abort(403)
+
+        if not can_access_challenge(challenge, user):
+            abort(404)
 
         if challenge.requirements:
             requirements = challenge.requirements.get("prerequisites", [])
@@ -1099,6 +1118,10 @@ class ChallengeSolves(Resource):
         if challenge.state == "hidden" and is_admin() is False:
             abort(404)
 
+        user = get_current_user()
+        if is_admin() is False and not can_access_challenge(challenge, user):
+            abort(404)
+
         freeze = get_config("freeze")
         if freeze:
             preview = request.args.get("preview")
@@ -1270,6 +1293,9 @@ class ChallengeRatings(Resource):
         if challenge.state == "hidden" and not is_admin():
             abort(404)
 
+        if not is_admin() and not can_access_challenge(challenge, user):
+            abort(404)
+
         # Check if user/team has solved this challenge (only allow rating if solved)
         if not is_admin():
             user_solves = get_solve_ids_for_user_id(user_id=user.id)
@@ -1360,8 +1386,11 @@ class ChallengeSolution(Resource):
         if challenge.state == "hidden" and not is_admin():
             abort(404)
 
+        user = get_current_user()
+        if not is_admin() and not can_access_challenge(challenge, user):
+            abort(404)
+
         # Get user's current solves
-        user = get_current_user_attrs()
         user_solves = get_solve_ids_for_user_id(user_id=user.id)
 
         response = {
