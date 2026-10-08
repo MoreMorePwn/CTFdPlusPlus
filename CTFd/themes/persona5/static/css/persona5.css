@@ -1523,18 +1523,9 @@ body.p5 .p5-card.challenge-solved { background: var(--p5-red); border-color: var
 /* ======================================================= notifications === */
 .p5-chat-wrap { max-width: 860px; }
 .p5-chat { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.75rem; }
-.p5-chat__msg { display: flex; align-items: flex-start; gap: 1rem; }
-.p5-chat__msg--alt { flex-direction: row-reverse; }
-.p5-chat__avatar {
-  flex: 0 0 auto;
-  width: 4.25rem;
-  height: 4.25rem;
-  /* Announcements come from the event itself: the NCW eagle. */
-  background: url("../img/emblem/eagle.webp") no-repeat 60% 55% / 82% auto, var(--p5-black);
-  border: 3px solid var(--p5-white);
-  clip-path: polygon(50% 0, 100% 38%, 82% 100%, 18% 100%, 0 38%);
-}
-.p5-chat__msg--alt .p5-chat__avatar { background-color: var(--p5-red); }
+/* Messages alternate sides, like a group chat, without sender avatars. */
+.p5-chat__msg { display: flex; align-items: flex-start; padding-right: 3rem; }
+.p5-chat__msg--alt { flex-direction: row-reverse; padding: 0 0 0 3rem; }
 .p5-chat__bubble {
   position: relative;
   flex: 1 1 auto;
@@ -1547,17 +1538,6 @@ body.p5 .p5-card.challenge-solved { background: var(--p5-red); border-color: var
 }
 .p5-chat__msg--alt .p5-chat__bubble { background: var(--p5-black); color: #fff; box-shadow: 7px 7px 0 var(--p5-cyan); transform: rotate(0.6deg); }
 [data-bs-theme="dark"] .p5-chat__msg--alt .p5-chat__bubble { border-color: var(--p5-white); }
-.p5-chat__bubble::before {
-  content: "";
-  position: absolute;
-  left: -1.05rem;
-  top: 1rem;
-  width: 1rem;
-  height: 1.2rem;
-  background: inherit;
-  clip-path: polygon(100% 0, 0 55%, 100% 100%);
-}
-.p5-chat__msg--alt .p5-chat__bubble::before { left: auto; right: -1.05rem; clip-path: polygon(0 0, 100% 55%, 0 100%); }
 .p5-chat__title { margin: 0 0 0.35rem; font-size: 1.5rem; }
 .p5-chat__text p:last-child { margin-bottom: 0; }
 .p5-chat__time { display: block; margin-top: 0.5rem; font-family: var(--p5-display); letter-spacing: 0.1em; opacity: 0.7; }
@@ -1838,3 +1818,7 @@ html.p5-is-leaving .p5-leaving { transform: skewX(-10deg) translateY(0); opacity
 }
 /* The splash title is short and must never split a word across lines. */
 .p5-splash__title .p5-rw { white-space: nowrap; }
+@media (max-width: 575.98px) {
+  .p5-chat__msg { padding-right: 1rem; }
+  .p5-chat__msg--alt { padding-left: 1rem; }
+}

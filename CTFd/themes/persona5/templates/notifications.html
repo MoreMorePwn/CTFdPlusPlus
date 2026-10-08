@@ -12,7 +12,6 @@
     <ol class="p5-chat">
       {% for notification in notifications %}
         <li class="p5-chat__msg {{ 'p5-chat__msg--alt' if loop.index is even }}">
-          <span class="p5-chat__avatar" aria-hidden="true"></span>
           <div class="p5-chat__bubble">
             <h3 class="p5-chat__title">{{ notification.title }}</h3>
             <div class="p5-chat__text p5-prose">{{ notification.html }}</div>
