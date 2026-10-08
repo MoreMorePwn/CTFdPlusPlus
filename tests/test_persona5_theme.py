@@ -19,7 +19,7 @@ def p5_app():
     destroy_ctfd(app)
 
 
-def test_persona5_home_keeps_event_identity_and_page_content(p5_app):
+def test_persona5_home_is_title_screen_only(p5_app):
     with p5_app.app_context():
         index = Pages.query.filter_by(route="index").one()
         index.content = "<p>Competition rules remain visible.</p>"
@@ -27,7 +27,8 @@ def test_persona5_home_keeps_event_identity_and_page_content(p5_app):
         client = p5_app.test_client()
         html = client.get("/").get_data(as_text=True)
         assert 'id="p5-title-name" data-p5-ransom>Phantom Heist' in html
-        assert "Competition rules remain visible." in html
+        # The index page's content (CTFd's stock placeholder by default) is not rendered.
+        assert "Competition rules remain visible." not in html
         assert "data-p5-countdown" in html
         assert "img/logo/ncw-logo.webp" in html
         assert "img/logo/eagle-icon.png" in html

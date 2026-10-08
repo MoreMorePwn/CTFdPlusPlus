@@ -60,13 +60,8 @@
     </div>
   </section>
 
-  {% if content and content | striptags | trim %}
-    <section class="container p5-home-content">
-      <div class="p5-sheet p5-prose">
-        {{ content | safe }}
-      </div>
-    </section>
-  {% endif %}
+  {#- The homepage is only the title screen: the index page's content (CTFd's stock
+      placeholder unless an admin rewrote it) is intentionally not rendered here. -#}
 {% else %}
   {{ stage(title or Configs.ctf_name, kicker=Configs.ctf_name) }}
   <div class="container p5-sheet p5-prose">

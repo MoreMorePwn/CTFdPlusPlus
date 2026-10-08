@@ -48,7 +48,9 @@ Motion levels:
 
 Bespoke layouts:
 
-- title screen (home), with a P5 calendar and countdown
+- title screen (home), with a P5 calendar and countdown. The index page's
+  content from Admin > Pages is not shown on the homepage; use other pages
+  for rules or info.
 - challenge board (target list) and challenge dialogue
 - scoreboard podium
 - login, register, reset password and confirm ("infiltration")
