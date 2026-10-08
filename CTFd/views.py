@@ -48,6 +48,7 @@ from CTFd.utils.decorators import authed_only
 from CTFd.utils.health import check_config, check_database
 from CTFd.utils.helpers import get_errors, get_infos, markup
 from CTFd.utils.modes import USERS_MODE
+from CTFd.utils.modules import can_access_challenge
 from CTFd.utils.security.auth import login_user
 from CTFd.utils.security.csrf import generate_nonce
 from CTFd.utils.security.signing import (
@@ -408,6 +409,9 @@ def files(path):
                         pass
                     else:
                         abort(403)
+                user = get_current_user()
+                if not can_access_challenge(f.challenge, user):
+                    abort(404)
         else:
             # User cannot view challenges based on challenge visibility
             # e.g. ctf requires registration but user isn't authed or
@@ -468,6 +472,9 @@ def files(path):
             if file_id != f.id:
                 abort(403)
 
+            if user.type != "admin" and not can_access_challenge(f.challenge, user):
+                abort(404)
+
     elif f.type == "solution":
         s = Solutions.query.filter_by(id=f.solution_id).first_or_404()
         if s.state != "visible" or s.challenge.state != "visible":
@@ -476,6 +483,11 @@ def files(path):
                 pass
             else:
                 abort(404)
+        user = get_current_user()
+        if current_user.is_admin() is False and not can_access_challenge(
+            s.challenge, user
+        ):
+            abort(404)
     elif f.type == "submission":
         if authed() is False:
             abort(403)

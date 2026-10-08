@@ -26,15 +26,15 @@ export default defineConfig({
               dest: "static/webfonts",
             },
             {
-              src: "./node_modules/@fontsource/lato/files/**/*400*-normal*",
+              src: "./node_modules/@fontsource/lato/files/**/*400*",
               dest: "static/webfonts"
             },
             {
-              src: "./node_modules/@fontsource/lato/files/**/*700*-normal*",
+              src: "./node_modules/@fontsource/lato/files/**/*700*",
               dest: "static/webfonts"
             },
             {
-              src: "./node_modules/@fontsource/raleway/files/**/*500*-normal*",
+              src: "./node_modules/@fontsource/raleway/files/**/*500*",
               dest: "static/webfonts"
             },
             {
@@ -58,6 +58,8 @@ export default defineConfig({
         "pages/main": resolve(__dirname, "assets/js/pages/main.js"),
         "pages/challenge": resolve(__dirname, "assets/js/pages/challenge.js"),
         "pages/challenges": resolve(__dirname, "assets/js/pages/challenges.js"),
+        "pages/audience": resolve(__dirname, "assets/js/pages/audience.js"),
+        "pages/module": resolve(__dirname, "assets/js/pages/module.js"),
         "pages/configs": resolve(__dirname, "assets/js/pages/configs.js"),
         "pages/notifications": resolve(
           __dirname,

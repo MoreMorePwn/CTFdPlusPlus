@@ -7,14 +7,13 @@ from CTFd.models import (
     ChallengeFiles,
     Fails,
     Solves,
-    Submissions,
     SubmissionFiles,
+    Submissions,
     Tracking,
     db,
 )
 from CTFd.utils import get_config
 from CTFd.utils.user import get_ip
-
 
 RECENT_WINDOW = datetime.timedelta(hours=24)
 FAST_AFTER_OPEN_SECONDS = 120
