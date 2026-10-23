@@ -17,6 +17,13 @@ For development, run `uv sync` and `uv run serve.py` with Python 3.11.
 
 ## Features Added in CTFd++
 
+### Participant Themes
+
+Select participant themes from Admin > Config > Theme; the admin interface stays unchanged.
+The NCW 2026 theme is listed as `ncw2026` (previously `persona5`). Upgrades preserve
+the saved selection, and imports recognize backups using the old theme name.
+See the [NCW 2026 theme documentation](CTFd/themes/ncw2026/README.md) for assets and behavior.
+
 ### Reset and Automatic Exports
 
 - Removed the admin reset feature and Danger Zone UI. Switching back to user mode now requires a full CTFd++ reset from the CLI.

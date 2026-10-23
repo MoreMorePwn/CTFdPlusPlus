@@ -509,6 +509,8 @@ def import_ctf(backup, erase=True, ignore_overrides=False):
 
     # Set theme from backup if it is installed, otherwise fall back to the default theme
     backup_theme = get_config("ctf_theme")
+    if backup_theme == "persona5":
+        backup_theme = "ncw2026"
     if backup_theme and backup_theme in get_themes():
         set_config("ctf_theme", backup_theme)
     else:

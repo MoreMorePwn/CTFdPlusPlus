@@ -1,5 +1,5 @@
 /*
- * Persona 5 theme motion: calling-card lettering, jittery menu selector,
+ * NCW 2026 theme motion: calling-card lettering, jittery menu selector,
  * slash page wipes, the "take your treasure" splash on a correct flag and
  * synthesized sound effects (muted until the player opts in).
  *
@@ -16,7 +16,7 @@
   const still = () => reduceQuery.matches;
   const lite = () => liteQuery.matches;
   const gsap = () => window.gsap;
-  const assets = window.P5_ASSETS || "/themes/persona5/static/";
+  const assets = window.P5_ASSETS || "/themes/ncw2026/static/";
   const MASCOTS = ["laptop", "megaphone", "guide", "gamer", "crown", "money", "trophy", "think"];
 
   const store = {

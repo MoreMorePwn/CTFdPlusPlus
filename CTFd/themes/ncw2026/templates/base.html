@@ -24,7 +24,7 @@
 {%- set p5_actor = p5_thief or p5_default[0] -%}
 {%- set p5_label = p5_kicker or p5_default[1] -%}
 {%- set p5_home = request.endpoint == 'views.static_html' and (request.view_args or {}).get('route') == 'index' -%}
-{%- set p5_static = request.script_root ~ '/themes/persona5/static/' -%}
+{%- set p5_static = request.script_root ~ '/themes/ncw2026/static/' -%}
 <html lang="{{ get_locale() }}">
 <head>
   <title>{{ title or Configs.ctf_name }}</title>
@@ -39,7 +39,7 @@
 
   {% block stylesheets %}
     {{ Assets.css("assets/scss/main.scss") }}
-    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='persona5', path='css/persona5.css', v='13') }}">
+    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='ncw2026', path='css/ncw2026.css', v='13') }}">
   {% endblock %}
 
   {{ Plugins.styles }}
@@ -72,10 +72,10 @@
       window.P5_ASSETS = {{ p5_static | tojson }};
   </script>
 
-  <script src="{{ url_for('views.themes_beta', theme='persona5', path='vendor/gsap.min.js', v='3.13.0') }}" defer></script>
-  <script src="{{ url_for('views.themes_beta', theme='persona5', path='vendor/CustomEase.min.js', v='3.13.0') }}" defer></script>
-  <script src="{{ url_for('views.themes_beta', theme='persona5', path='vendor/CustomWiggle.min.js', v='3.13.0') }}" defer></script>
-  <script src="{{ url_for('views.themes_beta', theme='persona5', path='js/persona5.js', v='7') }}" defer></script>
+  <script src="{{ url_for('views.themes_beta', theme='ncw2026', path='vendor/gsap.min.js', v='3.13.0') }}" defer></script>
+  <script src="{{ url_for('views.themes_beta', theme='ncw2026', path='vendor/CustomEase.min.js', v='3.13.0') }}" defer></script>
+  <script src="{{ url_for('views.themes_beta', theme='ncw2026', path='vendor/CustomWiggle.min.js', v='3.13.0') }}" defer></script>
+  <script src="{{ url_for('views.themes_beta', theme='ncw2026', path='js/ncw2026.js', v='7') }}" defer></script>
 
   <style>
     :root {
@@ -113,7 +113,7 @@
   </div>
 </footer>
 
-{#- Full-screen layers driven by persona5.js -#}
+{#- Full-screen layers driven by ncw2026.js -#}
 <div class="p5-leaving" aria-hidden="true">
   <img class="p5-leaving__car" src="{{ p5_static }}img/deco/car.webp" alt="">
   <span class="p5-leaving__text">{% trans %}Now loading{% endtrans %}</span>

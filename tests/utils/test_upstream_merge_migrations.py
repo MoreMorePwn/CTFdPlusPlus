@@ -13,7 +13,7 @@ from tests.helpers import create_ctfd, destroy_ctfd
 def test_merged_migrations_have_one_head():
     config = Config("migrations/alembic.ini")
     config.set_main_option("script_location", "migrations")
-    assert ScriptDirectory.from_config(config).get_heads() == ["ab3899c0ffee"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["ac2026c0ffee"]
 
 
 @pytest.mark.skipif(
@@ -34,6 +34,11 @@ def test_upgrade_baseline_fork_and_upstream_preserves_data(starting_revision):
             drop_database()
             create_database()
             upgrade(revision=starting_revision)
+            if starting_revision == "a3e1c5d7b9f2":
+                # Reproduce the native upstream schema before this fork's merge.
+                app.db.session.execute(
+                    text("ALTER TABLE tracking MODIFY user_agent VARCHAR(256) NULL")
+                )
             app.db.session.execute(
                 text(
                     "INSERT INTO users (id, name, email, type) VALUES (1, 'preserved', 'preserved@examplectf.com', 'user')"
@@ -70,7 +75,7 @@ def test_upgrade_baseline_fork_and_upstream_preserves_data(starting_revision):
                 )
             app.db.session.commit()
             upgrade(revision="head")
-            assert get_current_revision() == "ab3899c0ffee"
+            assert get_current_revision() == "ac2026c0ffee"
             tracking_columns = {
                 c["name"]: c for c in inspect(app.db.engine).get_columns("tracking")
             }

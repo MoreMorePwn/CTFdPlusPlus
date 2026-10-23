@@ -1,7 +1,10 @@
-# Persona 5
+# NCW 2026
 
-A Persona 5 participant theme for CTFd++. Select `persona5` in
+A Persona 5-inspired NCW 2026 participant theme for CTFd++. Select `ncw2026` in
 Admin > Config > Theme. Admin pages keep the admin theme.
+
+Previously named `persona5`. Upgrades and legacy backup imports preserve the
+selection under its new name, `ncw2026`.
 
 ## What it does
 

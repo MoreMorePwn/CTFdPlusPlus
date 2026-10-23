@@ -1,6 +1,6 @@
 # Sound effects
 
-Every sound is synthesized in `js/persona5.js`, so this folder can stay empty.
+Every sound is synthesized in `js/ncw2026.js`, so this folder can stay empty.
 To use a recording instead, put the file here and map the effect name to it in
 `manifest.json`. A list plays a random entry each time:
 

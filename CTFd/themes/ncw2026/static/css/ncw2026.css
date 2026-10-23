@@ -1,7 +1,7 @@
 /* =============================================================================
-   Persona 5 participant theme for CTFd++
+   NCW 2026 participant theme for CTFd++
    Red / black / white with a cyan selection accent. Motion lives in
-   js/persona5.js (GSAP); everything here must look right without it.
+   js/ncw2026.js (GSAP); everything here must look right without it.
    ========================================================================== */
 
 /* ---------------------------------------------------------------- fonts --- */
@@ -164,7 +164,7 @@ body.p5 :focus-visible {
 
 
 /* --------------------------------------------------------- calling card --- */
-/* Letters are built by persona5.js; each gets its own font/colour/tilt. */
+/* Letters are built by ncw2026.js; each gets its own font/colour/tilt. */
 [data-p5-ransom] { line-height: 1.2; }
 .p5-rw { display: inline-block; white-space: nowrap; margin-right: 0.22em; }
 .p5-rw:last-child { margin-right: 0; }
