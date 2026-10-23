@@ -20,7 +20,10 @@ def upgrade():
     op.add_column(
         "submissions", sa.Column("browser_fingerprint", sa.String(length=128), nullable=True)
     )
-    op.add_column("tracking", sa.Column("user_agent", sa.Text(), nullable=True))
+    # Upstream user-agent tracking may already have created this shared column.
+    columns = {c["name"] for c in sa.inspect(op.get_bind()).get_columns("tracking")}
+    if "user_agent" not in columns:
+        op.add_column("tracking", sa.Column("user_agent", sa.Text(), nullable=True))
     op.add_column(
         "tracking", sa.Column("browser_fingerprint", sa.String(length=128), nullable=True)
     )

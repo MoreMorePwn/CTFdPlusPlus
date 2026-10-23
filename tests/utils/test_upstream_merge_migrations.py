@@ -4,7 +4,7 @@ import pytest
 from alembic.config import Config
 from alembic.script import ScriptDirectory
 from flask_migrate import upgrade
-from sqlalchemy import inspect, text
+from sqlalchemy import Text, inspect, text
 
 from CTFd.utils.migrations import create_database, drop_database, get_current_revision
 from tests.helpers import create_ctfd, destroy_ctfd
@@ -13,7 +13,7 @@ from tests.helpers import create_ctfd, destroy_ctfd
 def test_merged_migrations_have_one_head():
     config = Config("migrations/alembic.ini")
     config.set_main_option("script_location", "migrations")
-    assert ScriptDirectory.from_config(config).get_heads() == ["ab3888c0ffee"]
+    assert ScriptDirectory.from_config(config).get_heads() == ["ab3899c0ffee"]
 
 
 @pytest.mark.skipif(
@@ -21,7 +21,8 @@ def test_merged_migrations_have_one_head():
     reason="Full historical migrations require a disposable MySQL/MariaDB database",
 )
 @pytest.mark.parametrize(
-    "starting_revision", ["48d8250d19bd", "a9b8c7d6e5f4", "f63a9205d72f"]
+    "starting_revision",
+    ["48d8250d19bd", "a9b8c7d6e5f4", "f63a9205d72f", "ab3888c0ffee", "a3e1c5d7b9f2"],
 )
 def test_upgrade_baseline_fork_and_upstream_preserves_data(starting_revision):
     app = create_ctfd()
@@ -60,9 +61,28 @@ def test_upgrade_baseline_fork_and_upstream_preserves_data(starting_revision):
                         "UPDATE challenges SET scheduled_at='2030-01-01 00:00:00' WHERE id=1"
                     )
                 )
+            if starting_revision in ("a9b8c7d6e5f4", "ab3888c0ffee", "a3e1c5d7b9f2"):
+                app.db.session.execute(
+                    text(
+                        "INSERT INTO tracking (user_id, ip, user_agent) VALUES (1, '127.0.0.1', :agent)"
+                    ),
+                    {"agent": "Preserved browser " + "a" * 200},
+                )
             app.db.session.commit()
             upgrade(revision="head")
-            assert get_current_revision() == "ab3888c0ffee"
+            assert get_current_revision() == "ab3899c0ffee"
+            tracking_columns = {
+                c["name"]: c for c in inspect(app.db.engine).get_columns("tracking")
+            }
+            assert "browser_fingerprint" in tracking_columns
+            assert isinstance(tracking_columns["user_agent"]["type"], Text)
+            if starting_revision in ("a9b8c7d6e5f4", "ab3888c0ffee", "a3e1c5d7b9f2"):
+                assert (
+                    app.db.session.execute(
+                        text("SELECT user_agent FROM tracking WHERE user_id=1")
+                    ).scalar()
+                    == "Preserved browser " + "a" * 200
+                )
             assert (
                 app.db.session.execute(
                     text("SELECT name FROM challenges WHERE id=1")

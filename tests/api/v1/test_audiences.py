@@ -1,8 +1,12 @@
+import pytest
+
 from CTFd.models import AudienceMembers, Audiences
 from tests.helpers import (
     create_ctfd,
     destroy_ctfd,
     gen_audience,
+    gen_team,
+    gen_user,
     login_as_user,
     register_user,
 )
@@ -78,3 +82,27 @@ def test_audience_member_add_remove():
             assert r.status_code == 200
             assert AudienceMembers.query.count() == 0
     destroy_ctfd(app)
+
+
+@pytest.mark.parametrize("account_type", ["user", "team"])
+def test_duplicate_audience_member_returns_validation_error(account_type):
+    app = create_ctfd()
+    try:
+        with app.app_context():
+            audience_id = gen_audience(app.db).id
+            account_id = (
+                gen_user(app.db, name="member").id
+                if account_type == "user"
+                else gen_team(app.db).id
+            )
+            route = f"/api/v1/audiences/{audience_id}/members"
+            data = {f"{account_type}_id": account_id}
+            with login_as_user(app, name="admin") as client:
+                assert client.post(route, json=data).status_code == 200
+                response = client.post(route, json=data)
+                assert response.status_code == 400
+                assert "already a member" in response.get_json()["errors"][""][0]
+                assert client.get(route).status_code == 200
+                assert AudienceMembers.query.count() == 1
+    finally:
+        destroy_ctfd(app)

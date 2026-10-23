@@ -39,7 +39,8 @@ from CTFd.schemas.ratings import RatingSchema
 from CTFd.schemas.tags import TagSchema
 from CTFd.utils import config, get_config
 from CTFd.utils import user as current_user
-from CTFd.utils.anti_cheat import get_browser_fingerprint, get_user_agent
+from CTFd.utils.anti_cheat import get_browser_fingerprint
+from CTFd.utils.anti_cheat import get_user_agent as get_submission_user_agent
 from CTFd.utils.challenge_submissions import (
     validate_challenge_submission_metadata,
     validate_challenge_submission_request_size,
@@ -616,7 +617,7 @@ class Challenge(Resource):
         ):
             track = Tracking(
                 ip=get_ip(),
-                user_agent=get_user_agent(request),
+                user_agent=get_submission_user_agent(request),
                 browser_fingerprint=get_browser_fingerprint(request),
                 user_id=session["id"],
                 type="challenges.open",
