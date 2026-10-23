@@ -866,6 +866,10 @@ body.p5 .p5-volume__menu {
 
 /* ========================================================= title screen === */
 .p5-title {
+  /* Art is placed inside a centred frame, not against the window edges, so on
+     wide screens it stays next to the text instead of drifting right. */
+  --p5-frame: min(100vw, 1600px);
+  --p5-gutter: max(0px, (100vw - var(--p5-frame)) / 2);
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -894,7 +898,7 @@ body.p5 .p5-volume__menu {
   z-index: -2;
   right: -10%;
   top: -15%;
-  width: 58%;
+  width: calc(var(--p5-gutter) + var(--p5-frame) * 0.48 + 10%);
   height: 140%;
   background:
     radial-gradient(rgba(255, 255, 255, 0.08) 22%, transparent 24%) 0 0 / 12px 12px,
@@ -905,20 +909,20 @@ body.p5 .p5-volume__menu {
 .p5-title__persona {
   position: absolute;
   z-index: -1;
-  right: 18%;
+  right: calc(var(--p5-gutter) + var(--p5-frame) * 0.18);
   top: 6%;
   height: 92%;
-  max-width: 55%;
+  max-width: calc(var(--p5-frame) * 0.55);
   object-fit: contain;
   opacity: 0.5;
 }
 .p5-title__thief {
   position: absolute;
   z-index: 0;
-  right: 2%;
+  right: calc(var(--p5-gutter) + var(--p5-frame) * 0.02);
   bottom: 3%;
   height: 74%;
-  max-width: 38%;
+  max-width: calc(var(--p5-frame) * 0.38);
   object-fit: contain;
   object-position: right bottom;
   filter: drop-shadow(10px 10px 0 var(--p5-black));
@@ -927,10 +931,10 @@ body.p5 .p5-volume__menu {
 .p5-title__buddy {
   position: absolute;
   z-index: 0;
-  right: 37%;
+  right: calc(var(--p5-gutter) + var(--p5-frame) * 0.37);
   bottom: 3%;
   height: 34%;
-  max-width: 17%;
+  max-width: calc(var(--p5-frame) * 0.17);
   object-fit: contain;
   object-position: right bottom;
   transform: rotate(5deg);
@@ -939,7 +943,7 @@ body.p5 .p5-volume__menu {
 .p5-title__card {
   position: absolute;
   z-index: 0;
-  right: 3%;
+  right: calc(var(--p5-gutter) + var(--p5-frame) * 0.03);
   top: calc(var(--p5-nav-h) + 1.5rem);
   width: clamp(80px, 8vw, 130px);
   transform: rotate(-12deg);
@@ -948,7 +952,7 @@ body.p5 .p5-volume__menu {
 .p5-title__stars {
   position: absolute;
   z-index: 1;
-  right: 34%;
+  right: calc(var(--p5-gutter) + var(--p5-frame) * 0.34);
   top: 12%;
   width: clamp(90px, 9vw, 150px);
   pointer-events: none;
